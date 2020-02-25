@@ -49,9 +49,9 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/console_margin_bottom"
-                    android:layout_marginStart="@dimen/console_margin_start_end"
-                    android:layout_marginEnd="@dimen/console_margin_start_end"
+                    android:layout_marginBottom="@dimen/console_margin_bottom_shrink"
+                    android:layout_marginStart="@dimen/console_margin_start_end_shrink"
+                    android:layout_marginEnd="@dimen/console_margin_start_end_shrink"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent">

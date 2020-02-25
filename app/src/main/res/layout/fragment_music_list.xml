@@ -6,8 +6,8 @@
     android:name="com.benlscr.musicplayer.MusicsFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="50dp"
-    android:layout_marginEnd="35dp"
+    android:layout_marginStart="@dimen/music_margin_start_shrink"
+    android:layout_marginEnd="@dimen/music_margin_end_shrink"
     app:layoutManager="LinearLayoutManager"
     tools:context=".MusicsFragment"
     tools:listitem="@layout/fragment_music" />
