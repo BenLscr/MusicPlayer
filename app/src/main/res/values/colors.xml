@@ -3,4 +3,8 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="colorTitle">#c3c5c6</color>
+    <color name="colorArtist">#7b7c80</color>
+    <color name="colorAlbum">#84878a</color>
 </resources>

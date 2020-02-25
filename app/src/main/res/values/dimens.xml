@@ -1,0 +1,3 @@
+<resources>
+    <dimen name="button_choice_margin">50dp</dimen>
+</resources>
