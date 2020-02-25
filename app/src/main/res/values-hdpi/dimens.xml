@@ -1,3 +1,15 @@
 <resources>
 
+    /----- Shrink Layout -----\
+    <dimen name="header_height">250dp</dimen>
+    <dimen name="album_artist_margin">20dp</dimen>
+    <dimen name="expand_shrink">20dp</dimen>
+    <dimen name="console_margin_start_end_shrink">10dp</dimen>
+    <dimen name="console_margin_bottom_shrink">0dp</dimen>
+
+    /----- Music List -----\
+    <dimen name="music_margin_start_shrink">35dp</dimen>
+    <dimen name="music_margin_end_shrink">22dp</dimen>
+    <dimen name="music_margin_top_bottom">10dp</dimen>
+
 </resources>
