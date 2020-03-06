@@ -1,5 +1,6 @@
 package com.benlscr.musicplayer
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
@@ -15,7 +16,15 @@ class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInterac
         binding = ActivityShrunkBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        openExpandActivity()
         addMusicsFragment()
+    }
+
+    private fun openExpandActivity() {
+        binding.expand.setOnClickListener {
+            val intent = Intent(this, ExpandActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun addMusicsFragment() {

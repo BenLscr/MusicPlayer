@@ -40,7 +40,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:layout_margin="@dimen/expand_shrink"
+                    android:padding="@dimen/expand_shrink"
                     android:background="@android:color/transparent"
                     android:src="@drawable/button_expand"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -60,7 +60,6 @@
                         android:id="@+id/skip_backward_shrink"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start|center_vertical"
                         android:background="@drawable/background_skip_backward_shrink"
                         android:src="@drawable/button_skip_backward_shrink"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -71,7 +70,6 @@
                         android:id="@+id/album_image_shrink_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -90,7 +88,6 @@
                             android:layout_gravity="center" />
 
                         <ImageView
-                            android:id="@+id/glass_shrink"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -102,7 +99,6 @@
                         android:id="@+id/skip_forward_shrink"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="end|center_vertical"
                         android:background="@drawable/background_skip_forward_shrink"
                         android:src="@drawable/button_skip_forward_shrink"
                         app:layout_constraintBottom_toBottomOf="parent"

@@ -12,4 +12,11 @@
     <dimen name="music_margin_end_shrink">35dp</dimen>
     <dimen name="music_margin_top_bottom">10dp</dimen>
 
+    /----- Expand Layout -----\
+    <dimen name="title_artist_marginTop_expand">20dp</dimen>
+    <dimen name="time_marginBottom">5dp</dimen>
+    <dimen name="progressBar_marginBottom">10dp</dimen>
+    <dimen name="progressBar_marginStart">35dp</dimen>
+    <dimen name="progressBar_marginEnd">35dp</dimen>
+
 </resources>
