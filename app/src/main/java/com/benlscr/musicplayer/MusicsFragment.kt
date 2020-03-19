@@ -12,24 +12,17 @@ import android.view.ViewGroup
 
 import com.benlscr.musicplayer.dummy.DummyContent
 import com.benlscr.musicplayer.dummy.DummyContent.DummyItem
+import com.benlscr.musicplayer.model.Music
 
-/**
- * A fragment representing a list of Items.
- * Activities containing this fragment MUST implement the
- * [MusicsFragment.OnListFragmentInteractionListener] interface.
- */
 class MusicsFragment : Fragment() {
 
-    // TODO: Customize parameters
-    private var columnCount = 1
-
+    private val musicRecyclerViewAdapter = MusicRecyclerViewAdapter()
     private var listener: OnListFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
     }
 
@@ -39,15 +32,9 @@ class MusicsFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_music_list, container, false)
 
-        // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                adapter = MusicRecyclerViewAdapter(DummyContent.ITEMS, listener)
-            }
+        (view as RecyclerView).apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = musicRecyclerViewAdapter
         }
         return view
     }
@@ -66,6 +53,8 @@ class MusicsFragment : Fragment() {
         listener = null
     }
 
+    fun updateMusicsFragment(musics: List<Music>) = musicRecyclerViewAdapter.updateMusicsFragment(musics, listener)
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -83,16 +72,10 @@ class MusicsFragment : Fragment() {
     }
 
     companion object {
-
-        // TODO: Customize parameter argument names
-        const val ARG_COLUMN_COUNT = "column-count"
-
-        // TODO: Customize parameter initialization
         @JvmStatic
-        fun newInstance(columnCount: Int) =
+        fun newInstance() =
             MusicsFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(ARG_COLUMN_COUNT, columnCount)
                 }
             }
     }
