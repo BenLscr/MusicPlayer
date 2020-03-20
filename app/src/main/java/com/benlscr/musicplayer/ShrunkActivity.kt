@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.benlscr.musicplayer.databinding.ActivityShrunkBinding
-import com.benlscr.musicplayer.dummy.DummyContent
 import com.sembozdemir.permissionskt.askPermissions
 
 class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInteractionListener {
@@ -34,8 +33,8 @@ class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInterac
         fragmentTransaction.commit()
     }
 
-    override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onListFragmentInteraction(id: Long) {
+        shrunkViewModel.eventFromList(applicationContext, id)
     }
 
     private fun askPermissions() {

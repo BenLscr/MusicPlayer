@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 
 
@@ -31,6 +32,9 @@ class MusicRecyclerViewAdapter(
         with(holder) {
             title.text = music.title
             artist.text = music.artist
+            playPauseShrink.setOnClickListener {
+                mListener?.onListFragmentInteraction(music.id)
+            }
             //mView.setOnClickListener { mListener?.onListFragmentInteraction(position) }
         }
     }
@@ -44,8 +48,9 @@ class MusicRecyclerViewAdapter(
         notifyDataSetChanged()
     }
 
-    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
+    inner class ViewHolder(mView: View) : RecyclerView.ViewHolder(mView) {
         val title: TextView = mView.title_list
         val artist: TextView = mView.artist_list
+        val playPauseShrink: ImageButton = mView.play_pause_shrink
     }
 }
