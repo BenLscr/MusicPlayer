@@ -60,8 +60,7 @@
                         android:id="@+id/skip_backward_shrink"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/background_skip_backward_shrink"
-                        android:src="@drawable/button_skip_backward_shrink"
+                        android:background="@drawable/button_skip_backward_shrink"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -99,8 +98,7 @@
                         android:id="@+id/skip_forward_shrink"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/background_skip_forward_shrink"
-                        android:src="@drawable/button_skip_forward_shrink"
+                        android:background="@drawable/button_skip_forward_shrink"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />

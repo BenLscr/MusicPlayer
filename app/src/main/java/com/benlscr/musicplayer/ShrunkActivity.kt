@@ -8,9 +8,10 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.benlscr.musicplayer.databinding.ActivityShrunkBinding
+import com.benlscr.musicplayer.model.Music
 import com.sembozdemir.permissionskt.askPermissions
 
-class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInteractionListener {
+class ShrunkActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityShrunkBinding
     private val shrunkViewModel : ShrunkViewModel by lazy { ViewModelProvider(this).get(ShrunkViewModel::class.java) }
@@ -23,7 +24,7 @@ class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInterac
 
         addMusicsFragment()
         askPermissions()
-        updateMusicsFragment()
+        setObserver()
         openExpandActivity()
     }
 
@@ -31,10 +32,6 @@ class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInterac
         val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.add(R.id.musics_container, musicsFragment)
         fragmentTransaction.commit()
-    }
-
-    override fun onListFragmentInteraction(id: Long) {
-        shrunkViewModel.eventFromList(applicationContext, id)
     }
 
     private fun askPermissions() {
@@ -49,10 +46,14 @@ class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInterac
         shrunkViewModel.searchForMusic(contentResolver)
     }
 
-    private fun updateMusicsFragment() = shrunkViewModel.musics.observe(
-        this,
-        Observer {musicsFragment.updateMusicsFragment(it)
-    })
+    private fun setObserver() {
+        shrunkViewModel.musics.observe(
+            this,
+            Observer { updateMusicSFragment(it) }
+        )
+    }
+
+    private fun updateMusicSFragment(musics: List<Music>) = musicsFragment.updateMusicsFragment(musics)
 
     private fun openExpandActivity() {
         binding.expand.setOnClickListener {
