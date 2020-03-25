@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -40,6 +41,13 @@ class MusicRecyclerViewAdapter(
                     ContextCompat.getDrawable(it, R.drawable.button_play_shrink)
                 }
             }
+            musicBackground.background = mContext?.let {
+                if (currentId == music.id) {
+                    ContextCompat.getDrawable(it, R.drawable.background_current_music)
+                } else {
+                    null
+                }
+            }
         }
     }
 
@@ -70,5 +78,6 @@ class MusicRecyclerViewAdapter(
         val title: TextView = mView.title_list
         val artist: TextView = mView.artist_list
         val playPauseShrink: ImageButton = mView.play_pause_shrink
+        val musicBackground: FrameLayout = mView.music_in_list_layout
     }
 }
