@@ -19,7 +19,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="300dp">
+                android:layout_height="320dp">
 
                 <TextView
                     android:id="@+id/album_and_artist"
@@ -29,7 +29,6 @@
                     android:layout_margin="30dp"
                     android:text="Album - Artist"
                     android:textColor="@color/colorAlbum"
-                    android:textStyle="bold"
                     android:textAllCaps="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -49,9 +48,9 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginStart="25dp"
-                    android:layout_marginEnd="25dp"
+                    android:layout_marginBottom="40dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent">
@@ -60,6 +59,8 @@
                         android:id="@+id/skip_backward_shrink"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:scaleX="1.1"
+                        android:scaleY="1.1"
                         android:background="@drawable/button_skip_backward_shrink"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -78,6 +79,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:scaleX="1.1"
+                            android:scaleY="1.1"
                             android:src="@drawable/background_album_image_shrink" />
 
                         <ImageView
@@ -90,6 +93,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:scaleX="1.1"
+                            android:scaleY="1.1"
                             android:src="@drawable/glass_shrink" />
 
                     </FrameLayout>
@@ -98,6 +103,8 @@
                         android:id="@+id/skip_forward_shrink"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:scaleX="1.1"
+                        android:scaleY="1.1"
                         android:background="@drawable/button_skip_forward_shrink"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"

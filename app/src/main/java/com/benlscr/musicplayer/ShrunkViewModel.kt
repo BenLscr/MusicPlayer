@@ -43,7 +43,7 @@ class ShrunkViewModel : ViewModel() {
             val thisArtist = cursor.getString(artistColumn)
             val thisAlbum = cursor.getString(albumColumn)
             if (thisTitle.length >= 25) {
-                thisTitle = thisTitle.substring(0, 25) + "..."
+                thisTitle = thisTitle.substring(0, 30) + "..."
             }
             list.add(Music(thisId, thisTitle, thisArtist, thisAlbum))
         } while (cursor.moveToNext())
