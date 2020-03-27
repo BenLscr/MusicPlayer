@@ -83,19 +83,25 @@
                             android:scaleY="1.1"
                             android:src="@drawable/background_album_image_shrink" />
 
-                        <ImageView
-                            android:id="@+id/album_image_shrink"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center" />
+                        <com.github.florent37.shapeofview.shapes.CircleView
+                            android:layout_width="133dp"
+                            android:layout_height="133dp"
+                            android:layout_gravity="center">
+
+                            <ImageView
+                                android:id="@+id/album_image_shrink"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/album_image"
+                                android:scaleType="center"/>
+
+                        </com.github.florent37.shapeofview.shapes.CircleView>
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="133dp"
+                            android:layout_height="133dp"
                             android:layout_gravity="center"
-                            android:scaleX="1.1"
-                            android:scaleY="1.1"
-                            android:src="@drawable/glass_shrink" />
+                            android:src="@drawable/glass" />
 
                     </FrameLayout>
 

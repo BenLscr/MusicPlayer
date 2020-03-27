@@ -26,7 +26,6 @@
                 android:layout_marginTop="30dp"
                 android:text="Playing now"
                 android:textColor="@color/colorAlbum"
-                android:textStyle="bold"
                 android:textAllCaps="true" />
 
             <ImageButton
@@ -43,24 +42,35 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:scaleX="1.15"
+            android:scaleY="1.15">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/background_album_image_expand" />
 
-            <ImageView
-                android:id="@+id/album_image_expand"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+            <com.github.florent37.shapeofview.shapes.CircleView
+                android:layout_width="230dp"
+                android:layout_height="230dp"
+                android:layout_gravity="center">
+                
+                <ImageView
+                    android:id="@+id/album_image_expand"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/album_image"
+                    android:scaleType="center"/>
+                
+            </com.github.florent37.shapeofview.shapes.CircleView>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="230dp"
+                android:layout_height="230dp"
                 android:layout_gravity="center"
-                android:src="@drawable/glass_expand" />
+                android:src="@drawable/glass" />
 
         </FrameLayout>
 
@@ -71,8 +81,9 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="35dp"
                 android:orientation="vertical"
+                android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -81,8 +92,8 @@
                     android:id="@+id/title_expand"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:text="Title"
+                    android:textStyle="bold"
                     android:textColor="@color/colorTitle"
                     android:textSize="20sp" />
 
@@ -90,10 +101,9 @@
                     android:id="@+id/artist_expand"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:text="Artist"
                     android:textColor="@color/colorArtist"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -105,7 +115,7 @@
                 android:textColor="@color/colorArtist"
                 app:layout_constraintBottom_toTopOf="@+id/view"
                 app:layout_constraintStart_toStartOf="@+id/view"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="10dp"/>
 
             <TextView
                 android:id="@+id/end_time"
@@ -115,15 +125,15 @@
                 android:textColor="@color/colorArtist"
                 app:layout_constraintBottom_toTopOf="@+id/view"
                 app:layout_constraintEnd_toEndOf="@+id/view"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="10dp"/>
 
             <View
                 android:id="@+id/view"
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
-                android:layout_marginStart="35dp"
-                android:layout_marginEnd="35dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="20dp"
                 android:background="@android:color/holo_orange_dark"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
@@ -140,6 +150,9 @@
             android:id="@+id/console_play_expand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:scaleX="1.1"
+            android:scaleY="1.1"
             android:src="@drawable/console_play_expand"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
