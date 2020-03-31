@@ -5,5 +5,6 @@ class Music(
     val title: String,
     val artist: String,
     val album: String,
+    val albumId: Long,
     var isCurrentlyPlayed: Boolean = false
 )

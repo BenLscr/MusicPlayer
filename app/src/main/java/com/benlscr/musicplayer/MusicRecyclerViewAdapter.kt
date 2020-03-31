@@ -11,13 +11,15 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.benlscr.musicplayer.model.Music
+import com.benlscr.musicplayer.MusicsFragment.OnListFragmentInteractionListener
 import kotlinx.android.synthetic.main.fragment_music.view.*
 
 class MusicRecyclerViewAdapter(
 ) : RecyclerView.Adapter<MusicRecyclerViewAdapter.ViewHolder>() {
 
-    private val musics = mutableListOf<Music>()
+    private var mListener: OnListFragmentInteractionListener? = null
     private var mContext: Context? = null
+    private val musics = mutableListOf<Music>()
     private var currentId: Long? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,6 +34,7 @@ class MusicRecyclerViewAdapter(
             title.text = music.title
             artist.text = music.artist
             playPauseShrink.setOnClickListener {
+                mListener?.onListFragmentInteraction(music.albumId)
                 mContext?.let { context -> eventFromList(context, position, music.id) }
             }
             playPauseShrink.background = mContext?.let {
@@ -53,7 +56,8 @@ class MusicRecyclerViewAdapter(
 
     override fun getItemCount(): Int = musics.size
 
-    fun updateMusicsFragment(musics: List<Music>, context: Context?) {
+    fun updateMusicsFragment(musics: List<Music>, listener: OnListFragmentInteractionListener?, context: Context?) {
+        mListener = listener
         mContext = context
         this.musics.clear()
         this.musics.addAll(musics)

@@ -2,6 +2,7 @@ package com.benlscr.musicplayer
 
 import android.Manifest
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
@@ -9,9 +10,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.benlscr.musicplayer.databinding.ActivityShrunkBinding
 import com.benlscr.musicplayer.model.Music
+import com.bumptech.glide.Glide
 import com.sembozdemir.permissionskt.askPermissions
 
-class ShrunkActivity : AppCompatActivity() {
+class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInteractionListener {
 
     private lateinit var binding: ActivityShrunkBinding
     private val shrunkViewModel : ShrunkViewModel by lazy { ViewModelProvider(this).get(ShrunkViewModel::class.java) }
@@ -34,6 +36,10 @@ class ShrunkActivity : AppCompatActivity() {
         fragmentTransaction.commit()
     }
 
+    override fun onListFragmentInteraction(albumId: Long) {
+        shrunkViewModel.updateConsoleLayout(contentResolver, albumId)
+    }
+
     private fun askPermissions() {
         askPermissions(Manifest.permission.READ_EXTERNAL_STORAGE) {
             onGranted {
@@ -51,9 +57,20 @@ class ShrunkActivity : AppCompatActivity() {
             this,
             Observer { updateMusicSFragment(it) }
         )
+        shrunkViewModel.albumImage.observe(
+            this,
+            Observer { updateAlbumArt(it) }
+        )
     }
 
     private fun updateMusicSFragment(musics: List<Music>) = musicsFragment.updateMusicsFragment(musics)
+
+    private fun updateAlbumArt(albumArt: Uri) =
+        Glide.with(applicationContext)
+            .asBitmap()
+            .load(albumArt)
+            .error(R.drawable.album_image)
+            .into(binding.albumImageShrink)
 
     private fun openExpandActivity() {
         binding.expand.setOnClickListener {

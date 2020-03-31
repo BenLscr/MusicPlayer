@@ -1,5 +1,6 @@
 package com.benlscr.musicplayer
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.benlscr.musicplayer.model.Music
 class MusicsFragment : Fragment() {
 
     private val musicRecyclerViewAdapter = MusicRecyclerViewAdapter()
+    private var listener: OnListFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +35,25 @@ class MusicsFragment : Fragment() {
         return view
     }
 
-    fun updateMusicsFragment(musics: List<Music>) = musicRecyclerViewAdapter.updateMusicsFragment(musics, context)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnListFragmentInteractionListener) {
+            listener = context
+        } else {
+            throw RuntimeException("$context must implement OnListFragmentInteractionListener")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
+    }
+
+    interface OnListFragmentInteractionListener {
+        fun onListFragmentInteraction(albumId: Long)
+    }
+
+    fun updateMusicsFragment(musics: List<Music>) = musicRecyclerViewAdapter.updateMusicsFragment(musics, listener, context)
 
     companion object {
         @JvmStatic

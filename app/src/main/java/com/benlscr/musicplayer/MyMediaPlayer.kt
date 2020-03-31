@@ -27,4 +27,6 @@ object MyMediaPlayer {
 
     fun stopMusic() = if (mediaPlayer.isPlaying) { mediaPlayer.stop() } else {}
 
+    fun release() = mediaPlayer.release()
+
 }
