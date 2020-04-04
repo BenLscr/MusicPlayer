@@ -27,7 +27,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="30dp"
-                    android:text="Album - Artist"
+                    android:text="No track currently played."
                     android:textColor="@color/colorAlbum"
                     android:textAllCaps="true"
                     app:layout_constraintEnd_toEndOf="parent"

@@ -50,7 +50,7 @@ class MusicsFragment : Fragment() {
     }
 
     interface OnListFragmentInteractionListener {
-        fun onListFragmentInteraction(albumId: Long)
+        fun onListFragmentInteraction(albumId: Long, album: String, artist: String)
     }
 
     fun updateMusicsFragment(musics: List<Music>) = musicRecyclerViewAdapter.updateMusicsFragment(musics, listener, context)

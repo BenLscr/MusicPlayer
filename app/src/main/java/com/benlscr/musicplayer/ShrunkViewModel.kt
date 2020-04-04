@@ -16,6 +16,8 @@ class ShrunkViewModel : ViewModel() {
     val musics: LiveData<List<Music>> = _musics
     private val _albumImage = MutableLiveData<Uri>()
     val albumImage: LiveData<Uri> = _albumImage
+    private val _albumAndArtist = MutableLiveData<String>()
+    val albumAndArtist : LiveData<String> = _albumAndArtist
 
     override fun onCleared() {
         super.onCleared()
@@ -61,11 +63,15 @@ class ShrunkViewModel : ViewModel() {
         _musics.value = list
     }
 
-    fun updateConsoleLayout(contentResolver: ContentResolver, albumId: Long) {
+    fun updateAlbumArtInTheConsole(contentResolver: ContentResolver, albumId: Long) {
         val uri = Uri.parse("content://media/external/audio/albumart")
         val albumArtUri = ContentUris.withAppendedId(uri, albumId)
         // albumArtUri = Uri.parse("content://media/external/audio/albumart/$albumId")
         _albumImage.value = albumArtUri
+    }
+
+    fun updateAlbumAndArtistPlayedInTheConsole(album: String, artist: String) {
+        _albumAndArtist.value = "$album \u2022 $artist"
     }
 
 }

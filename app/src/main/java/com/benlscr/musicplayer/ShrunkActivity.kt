@@ -10,8 +10,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.benlscr.musicplayer.databinding.ActivityShrunkBinding
 import com.benlscr.musicplayer.model.Music
+
 import com.bumptech.glide.Glide
 import com.sembozdemir.permissionskt.askPermissions
+import kotlinx.android.synthetic.main.activity_shrunk.view.*
 
 class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInteractionListener {
 
@@ -36,8 +38,9 @@ class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInterac
         fragmentTransaction.commit()
     }
 
-    override fun onListFragmentInteraction(albumId: Long) {
-        shrunkViewModel.updateConsoleLayout(contentResolver, albumId)
+    override fun onListFragmentInteraction(albumId: Long,  album: String, artist: String) {
+        shrunkViewModel.updateAlbumArtInTheConsole(contentResolver, albumId)
+        shrunkViewModel.updateAlbumAndArtistPlayedInTheConsole(album, artist)
     }
 
     private fun askPermissions() {
@@ -61,6 +64,10 @@ class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInterac
             this,
             Observer { updateAlbumArt(it) }
         )
+        shrunkViewModel.albumAndArtist.observe(
+            this,
+            Observer { updateAlbumAndArtist(it) }
+        )
     }
 
     private fun updateMusicSFragment(musics: List<Music>) = musicsFragment.updateMusicsFragment(musics)
@@ -71,6 +78,10 @@ class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInterac
             .load(albumArt)
             .error(R.drawable.album_image)
             .into(binding.albumImageShrink)
+
+    private fun updateAlbumAndArtist(albumAndArtist: String) {
+        binding.albumAndArtist.text = albumAndArtist
+    }
 
     private fun openExpandActivity() {
         binding.expand.setOnClickListener {

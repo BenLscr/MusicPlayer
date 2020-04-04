@@ -34,7 +34,7 @@ class MusicRecyclerViewAdapter(
             title.text = music.title
             artist.text = music.artist
             playPauseShrink.setOnClickListener {
-                mListener?.onListFragmentInteraction(music.albumId)
+                mListener?.onListFragmentInteraction(music.albumId, music.album, music.artist)
                 mContext?.let { context -> eventFromList(context, position, music.id) }
             }
             playPauseShrink.background = mContext?.let {
