@@ -17,6 +17,7 @@ class ShrunkViewModel : ViewModel() {
     val musics: LiveData<List<Music>> = _musics
     private val _currentMusic = MutableLiveData<Music>()
     val currentMusic: LiveData<Music> = _currentMusic
+    private var currentIndex: Int = -1
     private val _albumImage = MutableLiveData<Uri>()
     val albumImage: LiveData<Uri> = _albumImage
     private val _albumAndArtist = MutableLiveData<String>()
@@ -67,14 +68,16 @@ class ShrunkViewModel : ViewModel() {
     }
 
     fun updateCurrentMusic(idSelected: Long) {
-        for (music in _musics.value!!) {
+        _musics.value!!.forEachIndexed { index, music ->
             if (music.id == idSelected && idSelected != _currentMusic.value?.id) {
                 // If it's this music in the list and it's not the same currently in the MediaPlayer
                 // The first music played take this way
+                currentIndex = index
                 music.needToBePlayed = true
                 _currentMusic.value = music
             } else if (music.id == idSelected && idSelected == _currentMusic.value?.id) {
                 // If it's this music in the list and it's the current music used by the MediaPlayer
+                currentIndex = index
                 music.needToBePlayed = !MyMediaPlayer.isPlaying()
                 music.isInMediaPlayer = true
                 _currentMusic.value = music
@@ -86,9 +89,7 @@ class ShrunkViewModel : ViewModel() {
         if (needToBePlayed && isInMediaPlayer) {
             MyMediaPlayer.start()
         } else if (needToBePlayed && !isInMediaPlayer) {
-            MyMediaPlayer.stop()
-            MyMediaPlayer.prepareNewMediaPlayer(context, id)
-            MyMediaPlayer.start()
+            MyMediaPlayer.startNewMusic(context, id)
         } else if (!needToBePlayed && isInMediaPlayer) {
             MyMediaPlayer.pause()
         }
@@ -105,7 +106,26 @@ class ShrunkViewModel : ViewModel() {
         _albumAndArtist.value = "$album \u2022 $artist"
     }
 
-    fun skipBackward() {
+    fun skipBackward(context: Context) {
+        _musics.value?.let { _musics ->
+            if (_musics.isNotEmpty() || currentIndex == -1) {
+                if (MyMediaPlayer.currentPosition() < 5000) {
+                    if (currentIndex == 0) {
+                        currentIndex = _musics.size -1
+                    } else if (currentIndex > 0) {
+                        currentIndex -= 1
+                    }
+                    _musics[currentIndex].needToBePlayed = true
+                    _currentMusic.value = _musics[currentIndex]
+                } else {
+                    MyMediaPlayer.startNewMusic(context, _musics[currentIndex].id)
+                }
+            } else {
+                /**
+                 * Need a snackbar for error
+                 * */
+            }
+        }
     }
 
 }

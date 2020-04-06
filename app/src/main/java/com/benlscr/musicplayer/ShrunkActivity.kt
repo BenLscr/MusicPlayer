@@ -45,9 +45,7 @@ class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInterac
 
     private fun setListeners() {
         binding.skipBackwardShrink.setOnClickListener {
-            View.OnClickListener {
-                shrunkViewModel.skipBackward()
-            }
+            shrunkViewModel.skipBackward(applicationContext)
         }
     }
 

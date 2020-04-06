@@ -49,10 +49,6 @@ class MusicsFragment : Fragment() {
         listener = null
     }
 
-    /*interface OnListFragmentInteractionListener {
-        fun onListFragmentInteraction(albumId: Long, album: String, artist: String)
-    }*/
-
     interface OnListFragmentInteractionListener {
         fun onListFragmentInteraction(idSelected: Long)
     }
