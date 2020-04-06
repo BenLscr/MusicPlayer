@@ -20,7 +20,6 @@ class MusicRecyclerViewAdapter(
     private var mListener: OnListFragmentInteractionListener? = null
     private var mContext: Context? = null
     private val musics = mutableListOf<Music>()
-    private var currentId: Long? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -34,18 +33,17 @@ class MusicRecyclerViewAdapter(
             title.text = music.title
             artist.text = music.artist
             playPauseShrink.setOnClickListener {
-                mListener?.onListFragmentInteraction(music.albumId, music.album, music.artist)
-                mContext?.let { context -> eventFromList(context, position, music.id) }
+                mListener?.onListFragmentInteraction(music.id)
             }
             playPauseShrink.background = mContext?.let {
-                if (currentId == music.id && music.isCurrentlyPlayed) {
+                if (music.needToBePlayed) {
                     ContextCompat.getDrawable(it, R.drawable.button_pause_shrink)
                 } else {
                     ContextCompat.getDrawable(it, R.drawable.button_play_shrink)
                 }
             }
             musicBackground.background = mContext?.let {
-                if (currentId == music.id) {
+                if (music.needToBePlayed || music.isInMediaPlayer) {
                     ContextCompat.getDrawable(it, R.drawable.background_current_music)
                 } else {
                     null
@@ -56,7 +54,7 @@ class MusicRecyclerViewAdapter(
 
     override fun getItemCount(): Int = musics.size
 
-    fun updateMusicsFragment(musics: List<Music>, listener: OnListFragmentInteractionListener?, context: Context?) {
+    fun fillMusicsFragment(musics: List<Music>, listener: OnListFragmentInteractionListener?, context: Context?) {
         mListener = listener
         mContext = context
         this.musics.clear()
@@ -64,17 +62,16 @@ class MusicRecyclerViewAdapter(
         notifyDataSetChanged()
     }
 
-    private fun eventFromList(context: Context, position: Int, id: Long) {
-        val isPlaying: Boolean
-        if (id == currentId) {
-            isPlaying = MyMediaPlayer.readOrPause()
-        } else {
-            currentId = id
-            MyMediaPlayer.stopMusic()
-            MyMediaPlayer.startMusic(context, id)
-            isPlaying = true
+    fun updateMusicsFragment(id: Long, needToBePlayed: Boolean, isInMediaPlayer: Boolean) {
+        for (music in musics) {
+            if (music.id == id) {
+                music.needToBePlayed = needToBePlayed
+                music.isInMediaPlayer = isInMediaPlayer
+            } else {
+                music.needToBePlayed = false
+                music.isInMediaPlayer = false
+            }
         }
-        musics[position].isCurrentlyPlayed = isPlaying
         notifyDataSetChanged()
     }
 

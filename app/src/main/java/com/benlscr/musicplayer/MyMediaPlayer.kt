@@ -9,23 +9,18 @@ object MyMediaPlayer {
 
     private var mediaPlayer = MediaPlayer()
 
-    fun readOrPause(): Boolean {
-        return if (mediaPlayer.isPlaying) {
-            mediaPlayer.pause()
-            false
-        } else {
-            mediaPlayer.start()
-            true
-        }
-    }
+    fun isPlaying(): Boolean = mediaPlayer.isPlaying
 
-    fun startMusic(context: Context, id: Long) {
+    fun prepareNewMediaPlayer(context: Context, id: Long) {
         val contentUri: Uri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
         mediaPlayer = MediaPlayer.create(context, contentUri)
-        mediaPlayer.start()
     }
 
-    fun stopMusic() = if (mediaPlayer.isPlaying) { mediaPlayer.stop() } else {}
+    fun start() = mediaPlayer.start()
+
+    fun pause() = mediaPlayer.pause()
+
+    fun stop() = mediaPlayer.stop()
 
     fun release() = mediaPlayer.release()
 

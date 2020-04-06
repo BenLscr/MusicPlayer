@@ -49,11 +49,19 @@ class MusicsFragment : Fragment() {
         listener = null
     }
 
-    interface OnListFragmentInteractionListener {
+    /*interface OnListFragmentInteractionListener {
         fun onListFragmentInteraction(albumId: Long, album: String, artist: String)
+    }*/
+
+    interface OnListFragmentInteractionListener {
+        fun onListFragmentInteraction(idSelected: Long)
     }
 
-    fun updateMusicsFragment(musics: List<Music>) = musicRecyclerViewAdapter.updateMusicsFragment(musics, listener, context)
+    fun fillMusicsFragment(musics: List<Music>)
+            = musicRecyclerViewAdapter.fillMusicsFragment(musics, listener, context)
+
+    fun updateMusicsFragment(id: Long, needToBePlayed: Boolean, isInMediaPlayer: Boolean)
+            = musicRecyclerViewAdapter.updateMusicsFragment(id, needToBePlayed, isInMediaPlayer)
 
     companion object {
         @JvmStatic

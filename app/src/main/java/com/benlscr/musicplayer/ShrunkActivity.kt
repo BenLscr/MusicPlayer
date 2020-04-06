@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -13,7 +14,6 @@ import com.benlscr.musicplayer.model.Music
 
 import com.bumptech.glide.Glide
 import com.sembozdemir.permissionskt.askPermissions
-import kotlinx.android.synthetic.main.activity_shrunk.view.*
 
 class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInteractionListener {
 
@@ -27,8 +27,9 @@ class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInterac
         setContentView(binding.root)
 
         addMusicsFragment()
+        setListeners()
         askPermissions()
-        setObserver()
+        setObservers()
         openExpandActivity()
     }
 
@@ -38,27 +39,42 @@ class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInterac
         fragmentTransaction.commit()
     }
 
-    override fun onListFragmentInteraction(albumId: Long,  album: String, artist: String) {
-        shrunkViewModel.updateAlbumArtInTheConsole(contentResolver, albumId)
-        shrunkViewModel.updateAlbumAndArtistPlayedInTheConsole(album, artist)
+    override fun onListFragmentInteraction(idSelected: Long) {
+        shrunkViewModel.updateCurrentMusic(idSelected)
     }
 
-    private fun askPermissions() {
+    private fun setListeners() {
+        binding.skipBackwardShrink.setOnClickListener {
+            View.OnClickListener {
+                shrunkViewModel.skipBackward()
+            }
+        }
+    }
+
+    private fun askPermissions() =
         askPermissions(Manifest.permission.READ_EXTERNAL_STORAGE) {
             onGranted {
                 searchForMusic()
             }
         }
-    }
 
-    private fun searchForMusic() {
+    private fun searchForMusic() =
         shrunkViewModel.searchForMusic(contentResolver)
-    }
 
-    private fun setObserver() {
+
+    private fun setObservers() {
         shrunkViewModel.musics.observe(
             this,
-            Observer { updateMusicSFragment(it) }
+            Observer { fillMusicsFragment(it) }
+        )
+        shrunkViewModel.currentMusic.observe(
+            this,
+            Observer { music ->
+                shrunkViewModel.updateMediaPlayer(applicationContext, music.id, music.needToBePlayed, music.isInMediaPlayer)
+                shrunkViewModel.updateAlbumArtInTheConsole(music.albumId)
+                shrunkViewModel.updateAlbumAndArtistPlayedInTheConsole(music.album, music.artist)
+                updateMusicsFragment(music.id, music.needToBePlayed, music.isInMediaPlayer)
+            }
         )
         shrunkViewModel.albumImage.observe(
             this,
@@ -70,7 +86,11 @@ class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInterac
         )
     }
 
-    private fun updateMusicSFragment(musics: List<Music>) = musicsFragment.updateMusicsFragment(musics)
+    private fun fillMusicsFragment(musics: List<Music>) =
+        musicsFragment.fillMusicsFragment(musics)
+
+    private fun updateMusicsFragment(id: Long, needToBePlayed: Boolean, isInMediaPlayer: Boolean) =
+        musicsFragment.updateMusicsFragment(id , needToBePlayed, isInMediaPlayer)
 
     private fun updateAlbumArt(albumArt: Uri) =
         Glide.with(applicationContext)

@@ -2,6 +2,7 @@ package com.benlscr.musicplayer
 
 import android.content.ContentResolver
 import android.content.ContentUris
+import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.util.Log
@@ -14,6 +15,8 @@ class ShrunkViewModel : ViewModel() {
 
     private val _musics = MutableLiveData<List<Music>>()
     val musics: LiveData<List<Music>> = _musics
+    private val _currentMusic = MutableLiveData<Music>()
+    val currentMusic: LiveData<Music> = _currentMusic
     private val _albumImage = MutableLiveData<Uri>()
     val albumImage: LiveData<Uri> = _albumImage
     private val _albumAndArtist = MutableLiveData<String>()
@@ -63,7 +66,35 @@ class ShrunkViewModel : ViewModel() {
         _musics.value = list
     }
 
-    fun updateAlbumArtInTheConsole(contentResolver: ContentResolver, albumId: Long) {
+    fun updateCurrentMusic(idSelected: Long) {
+        for (music in _musics.value!!) {
+            if (music.id == idSelected && idSelected != _currentMusic.value?.id) {
+                // If it's this music in the list and it's not the same currently in the MediaPlayer
+                // The first music played take this way
+                music.needToBePlayed = true
+                _currentMusic.value = music
+            } else if (music.id == idSelected && idSelected == _currentMusic.value?.id) {
+                // If it's this music in the list and it's the current music used by the MediaPlayer
+                music.needToBePlayed = !MyMediaPlayer.isPlaying()
+                music.isInMediaPlayer = true
+                _currentMusic.value = music
+            }
+        }
+    }
+
+    fun updateMediaPlayer(context: Context, id: Long, needToBePlayed: Boolean, isInMediaPlayer: Boolean) {
+        if (needToBePlayed && isInMediaPlayer) {
+            MyMediaPlayer.start()
+        } else if (needToBePlayed && !isInMediaPlayer) {
+            MyMediaPlayer.stop()
+            MyMediaPlayer.prepareNewMediaPlayer(context, id)
+            MyMediaPlayer.start()
+        } else if (!needToBePlayed && isInMediaPlayer) {
+            MyMediaPlayer.pause()
+        }
+    }
+
+    fun updateAlbumArtInTheConsole(albumId: Long) {
         val uri = Uri.parse("content://media/external/audio/albumart")
         val albumArtUri = ContentUris.withAppendedId(uri, albumId)
         // albumArtUri = Uri.parse("content://media/external/audio/albumart/$albumId")
@@ -72,6 +103,9 @@ class ShrunkViewModel : ViewModel() {
 
     fun updateAlbumAndArtistPlayedInTheConsole(album: String, artist: String) {
         _albumAndArtist.value = "$album \u2022 $artist"
+    }
+
+    fun skipBackward() {
     }
 
 }
