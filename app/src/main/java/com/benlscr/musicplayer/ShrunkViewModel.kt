@@ -108,7 +108,7 @@ class ShrunkViewModel : ViewModel() {
 
     fun skipBackward(context: Context) {
         _musics.value?.let { _musics ->
-            if (_musics.isNotEmpty() || currentIndex == -1) {
+            if (_musics.isNotEmpty() && currentIndex != -1) {
                 if (MyMediaPlayer.currentPosition() < 5000) {
                     if (currentIndex == 0) {
                         currentIndex = _musics.size -1
