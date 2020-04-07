@@ -47,6 +47,9 @@ class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInterac
         binding.skipBackwardShrink.setOnClickListener {
             shrunkViewModel.skipBackward(applicationContext)
         }
+        binding.skipForwardShrink.setOnClickListener {
+            shrunkViewModel.skipForward(applicationContext)
+        }
     }
 
     private fun askPermissions() =

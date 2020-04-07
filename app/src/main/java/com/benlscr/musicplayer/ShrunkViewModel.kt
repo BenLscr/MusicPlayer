@@ -128,4 +128,23 @@ class ShrunkViewModel : ViewModel() {
         }
     }
 
+    fun skipForward(context: Context) {
+        _musics.value?.let { _musics ->
+            if (_musics.isNotEmpty() && currentIndex != -1) {
+                if (currentIndex == _musics.size -1) {
+                    currentIndex = 0
+                } else {
+                    currentIndex += 1
+                }
+                _musics[currentIndex].needToBePlayed = true
+                _currentMusic.value = _musics[currentIndex]
+                MyMediaPlayer.startNewMusic(context, _musics[currentIndex].id)
+            } else {
+                /**
+                 * Need a snackbar for error
+                 * */
+            }
+        }
+    }
+
 }

@@ -14,9 +14,14 @@ object MyMediaPlayer {
     fun startNewMusic(context: Context, id: Long) {
         if (isPlaying()) {
             stop()
+            mediaPlayer.reset()
         }
         val contentUri: Uri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
-        mediaPlayer = MediaPlayer.create(context, contentUri)
+        //mediaPlayer = MediaPlayer.create(context, contentUri)
+        mediaPlayer.apply {
+            setDataSource(context, contentUri)
+            prepare()
+        }
         start()
     }
 
