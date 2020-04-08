@@ -8,11 +8,13 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.benlscr.musicplayer.model.Music
 
 class ShrunkViewModel : ViewModel() {
 
+    private lateinit var context: Context
     private val _musics = MutableLiveData<List<Music>>()
     val musics: LiveData<List<Music>> = _musics
     private val _currentMusic = MutableLiveData<Music>()
@@ -27,6 +29,12 @@ class ShrunkViewModel : ViewModel() {
         super.onCleared()
         MyMediaPlayer.release()
     }
+
+    fun keepContextFromActivity(context: Context) {
+        this.context = context
+    }
+
+    fun giveViewModelToMediaPlayer() = MyMediaPlayer.keepTheViewModel(this)
 
     fun searchForMusic(contentResolver: ContentResolver) {
         val resolver: ContentResolver = contentResolver
@@ -85,7 +93,7 @@ class ShrunkViewModel : ViewModel() {
         }
     }
 
-    fun updateMediaPlayer(context: Context, id: Long, needToBePlayed: Boolean, isInMediaPlayer: Boolean) {
+    fun updateMediaPlayer(id: Long, needToBePlayed: Boolean, isInMediaPlayer: Boolean) {
         if (needToBePlayed && isInMediaPlayer) {
             MyMediaPlayer.start()
         } else if (needToBePlayed && !isInMediaPlayer) {
@@ -106,7 +114,7 @@ class ShrunkViewModel : ViewModel() {
         _albumAndArtist.value = "$album \u2022 $artist"
     }
 
-    fun skipBackward(context: Context) {
+    fun skipBackward() {
         _musics.value?.let { _musics ->
             if (_musics.isNotEmpty() && currentIndex != -1) {
                 if (MyMediaPlayer.currentPosition() < 5000) {
@@ -118,6 +126,9 @@ class ShrunkViewModel : ViewModel() {
                     _musics[currentIndex].needToBePlayed = true
                     _currentMusic.value = _musics[currentIndex]
                 } else {
+                    /**
+                     * MyMediaPlayer.restart with seekTo
+                     */
                     MyMediaPlayer.startNewMusic(context, _musics[currentIndex].id)
                 }
             } else {
@@ -128,7 +139,7 @@ class ShrunkViewModel : ViewModel() {
         }
     }
 
-    fun skipForward(context: Context) {
+    fun skipForward() {
         _musics.value?.let { _musics ->
             if (_musics.isNotEmpty() && currentIndex != -1) {
                 if (currentIndex == _musics.size -1) {
@@ -138,12 +149,17 @@ class ShrunkViewModel : ViewModel() {
                 }
                 _musics[currentIndex].needToBePlayed = true
                 _currentMusic.value = _musics[currentIndex]
-                MyMediaPlayer.startNewMusic(context, _musics[currentIndex].id)
             } else {
                 /**
                  * Need a snackbar for error
                  * */
             }
+        }
+    }
+
+    fun whenMusicEndSkipToTheNext(isFinished: Boolean) {
+        if (isFinished) {
+            skipForward()
         }
     }
 

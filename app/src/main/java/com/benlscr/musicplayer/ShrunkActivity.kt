@@ -27,10 +27,16 @@ class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInterac
         setContentView(binding.root)
 
         addMusicsFragment()
+        giveContextToViewModel()
         setListeners()
         askPermissions()
         setObservers()
         openExpandActivity()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        shrunkViewModel.giveViewModelToMediaPlayer()
     }
 
     private fun addMusicsFragment() {
@@ -43,12 +49,15 @@ class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInterac
         shrunkViewModel.updateCurrentMusic(idSelected)
     }
 
+    private fun giveContextToViewModel() =
+        shrunkViewModel.keepContextFromActivity(applicationContext)
+
     private fun setListeners() {
         binding.skipBackwardShrink.setOnClickListener {
-            shrunkViewModel.skipBackward(applicationContext)
+            shrunkViewModel.skipBackward()
         }
         binding.skipForwardShrink.setOnClickListener {
-            shrunkViewModel.skipForward(applicationContext)
+            shrunkViewModel.skipForward()
         }
     }
 
@@ -71,7 +80,7 @@ class ShrunkActivity : AppCompatActivity(), MusicsFragment.OnListFragmentInterac
         shrunkViewModel.currentMusic.observe(
             this,
             Observer { music ->
-                shrunkViewModel.updateMediaPlayer(applicationContext, music.id, music.needToBePlayed, music.isInMediaPlayer)
+                shrunkViewModel.updateMediaPlayer(music.id, music.needToBePlayed, music.isInMediaPlayer)
                 shrunkViewModel.updateAlbumArtInTheConsole(music.albumId)
                 shrunkViewModel.updateAlbumAndArtistPlayedInTheConsole(music.album, music.artist)
                 updateMusicsFragment(music.id, music.needToBePlayed, music.isInMediaPlayer)
