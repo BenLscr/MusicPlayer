@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ShrunkActivity"
+    tools:context=".shrunk.ShrunkActivity"
     android:background="@drawable/main_background"
     android:fitsSystemWindows="true">
 
@@ -36,6 +36,7 @@
 
                 <ImageButton
                     android:id="@+id/expand"
+                    android:onClick="expandButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
@@ -57,6 +58,7 @@
 
                     <ImageButton
                         android:id="@+id/skip_backward_shrink"
+                        android:onClick="skipBackwardButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:scaleX="1.1"
@@ -106,6 +108,7 @@
 
                     <ImageButton
                         android:id="@+id/skip_forward_shrink"
+                        android:onClick="skipForwardButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:scaleX="1.1"

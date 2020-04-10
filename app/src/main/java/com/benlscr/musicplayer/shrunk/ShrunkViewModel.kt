@@ -1,4 +1,4 @@
-package com.benlscr.musicplayer
+package com.benlscr.musicplayer.shrunk
 
 import android.content.ContentResolver
 import android.content.ContentUris
@@ -8,8 +8,8 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.benlscr.musicplayer.MyMediaPlayer
 import com.benlscr.musicplayer.model.Music
 
 class ShrunkViewModel : ViewModel() {
@@ -19,7 +19,7 @@ class ShrunkViewModel : ViewModel() {
     val musics: LiveData<List<Music>> = _musics
     private val _currentMusic = MutableLiveData<Music>()
     val currentMusic: LiveData<Music> = _currentMusic
-    private var currentIndex: Int = -1
+    private var currentIndex: Int = -1 // Use for skip buttons
     private val _albumImage = MutableLiveData<Uri>()
     val albumImage: LiveData<Uri> = _albumImage
     private val _albumAndArtist = MutableLiveData<String>()
@@ -34,9 +34,10 @@ class ShrunkViewModel : ViewModel() {
         this.context = context
     }
 
-    fun giveViewModelToMediaPlayer() = MyMediaPlayer.keepTheViewModel(this)
+    fun giveViewModelToMediaPlayer() =
+        MyMediaPlayer.keepTheViewModel(this)
 
-    fun searchForMusic(contentResolver: ContentResolver) {
+    fun lookForMusics(contentResolver: ContentResolver) {
         val resolver: ContentResolver = contentResolver
         val uri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val cursor: Cursor? = resolver.query(uri, null, null, null, null)
@@ -75,42 +76,46 @@ class ShrunkViewModel : ViewModel() {
         _musics.value = list
     }
 
-    fun updateCurrentMusic(idSelected: Long) {
+    fun eventFromListFragment(idSelected: Long) {
         _musics.value!!.forEachIndexed { index, music ->
             if (music.id == idSelected && idSelected != _currentMusic.value?.id) {
                 // If it's this music in the list and it's not the same currently in the MediaPlayer
                 // The first music played take this way
                 currentIndex = index
                 music.needToBePlayed = true
+                music.onlyUiNeedUpdate = false
                 _currentMusic.value = music
             } else if (music.id == idSelected && idSelected == _currentMusic.value?.id) {
                 // If it's this music in the list and it's the current music used by the MediaPlayer
                 currentIndex = index
                 music.needToBePlayed = !MyMediaPlayer.isPlaying()
                 music.isInMediaPlayer = true
+                music.onlyUiNeedUpdate = false
                 _currentMusic.value = music
             }
         }
     }
 
-    fun updateMediaPlayer(id: Long, needToBePlayed: Boolean, isInMediaPlayer: Boolean) {
-        if (needToBePlayed && isInMediaPlayer) {
-            MyMediaPlayer.start()
-        } else if (needToBePlayed && !isInMediaPlayer) {
-            MyMediaPlayer.startNewMusic(context, id)
-        } else if (!needToBePlayed && isInMediaPlayer) {
-            MyMediaPlayer.pause()
+    fun updateMediaPlayer(id: Long, needToBePlayed: Boolean, isInMediaPlayer: Boolean, onlyUiNeedUpdate: Boolean) {
+        if (!onlyUiNeedUpdate) {
+            if (needToBePlayed && isInMediaPlayer) {
+                MyMediaPlayer.start()
+            } else if (needToBePlayed && !isInMediaPlayer) {
+                MyMediaPlayer.startNewMusic(context, id)
+            } else if (!needToBePlayed && isInMediaPlayer) {
+                MyMediaPlayer.pause()
+            }
         }
     }
 
-    fun updateAlbumArtInTheConsole(albumId: Long) {
+    fun showAlbumArtInConsole(albumId: Long) {
         val uri = Uri.parse("content://media/external/audio/albumart")
         val albumArtUri = ContentUris.withAppendedId(uri, albumId)
         // albumArtUri = Uri.parse("content://media/external/audio/albumart/$albumId")
         _albumImage.value = albumArtUri
     }
 
-    fun updateAlbumAndArtistPlayedInTheConsole(album: String, artist: String) {
+    fun showAlbumAndArtistPlayedInConsole(album: String, artist: String) {
         _albumAndArtist.value = "$album \u2022 $artist"
     }
 
@@ -124,12 +129,16 @@ class ShrunkViewModel : ViewModel() {
                         currentIndex -= 1
                     }
                     _musics[currentIndex].needToBePlayed = true
+                    _musics[currentIndex].onlyUiNeedUpdate = false
                     _currentMusic.value = _musics[currentIndex]
                 } else {
                     /**
                      * MyMediaPlayer.restart with seekTo
                      */
-                    MyMediaPlayer.startNewMusic(context, _musics[currentIndex].id)
+                    MyMediaPlayer.startNewMusic(
+                        context,
+                        _musics[currentIndex].id
+                    )
                 }
             } else {
                 /**
@@ -148,6 +157,7 @@ class ShrunkViewModel : ViewModel() {
                     currentIndex += 1
                 }
                 _musics[currentIndex].needToBePlayed = true
+                _musics[currentIndex].onlyUiNeedUpdate = false
                 _currentMusic.value = _musics[currentIndex]
             } else {
                 /**
@@ -160,6 +170,28 @@ class ShrunkViewModel : ViewModel() {
     fun whenMusicEndSkipToTheNext(isFinished: Boolean) {
         if (isFinished) {
             skipForward()
+        }
+    }
+
+    fun idFromExpandActivity(idFromExpandAct: Long) {
+        if (idFromExpandAct != _currentMusic.value?.id) {
+            _musics.value?.let { _musics ->
+                _musics.forEachIndexed { index, music ->
+                    if (music.id == idFromExpandAct) {
+                        currentIndex = index
+                        music.onlyUiNeedUpdate = true
+                        music.needToBePlayed = MyMediaPlayer.isPlaying()
+                        music.isInMediaPlayer = true
+                        _currentMusic.value = music
+                    }
+                }
+            }
+        } else {
+            val music = _currentMusic.value
+            music?.onlyUiNeedUpdate = true
+            music?.needToBePlayed = MyMediaPlayer.isPlaying()
+            music?.isInMediaPlayer = true
+            _currentMusic.value = music
         }
     }
 

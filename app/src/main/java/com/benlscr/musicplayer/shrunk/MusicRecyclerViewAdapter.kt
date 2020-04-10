@@ -1,4 +1,4 @@
-package com.benlscr.musicplayer
+package com.benlscr.musicplayer.shrunk
 
 
 import android.content.Context
@@ -10,8 +10,9 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.benlscr.musicplayer.R
 import com.benlscr.musicplayer.model.Music
-import com.benlscr.musicplayer.MusicsFragment.OnListFragmentInteractionListener
+import com.benlscr.musicplayer.shrunk.MusicsFragment.OnListFragmentInteractionListener
 import kotlinx.android.synthetic.main.fragment_music.view.*
 
 class MusicRecyclerViewAdapter(
@@ -37,14 +38,20 @@ class MusicRecyclerViewAdapter(
             }
             playPauseShrink.background = mContext?.let {
                 if (music.needToBePlayed) {
-                    ContextCompat.getDrawable(it, R.drawable.button_pause_shrink)
+                    ContextCompat.getDrawable(it,
+                        R.drawable.button_pause_shrink
+                    )
                 } else {
-                    ContextCompat.getDrawable(it, R.drawable.button_play_shrink)
+                    ContextCompat.getDrawable(it,
+                        R.drawable.button_play_shrink
+                    )
                 }
             }
             musicBackground.background = mContext?.let {
                 if (music.needToBePlayed || music.isInMediaPlayer) {
-                    ContextCompat.getDrawable(it, R.drawable.background_current_music)
+                    ContextCompat.getDrawable(it,
+                        R.drawable.background_current_music
+                    )
                 } else {
                     null
                 }

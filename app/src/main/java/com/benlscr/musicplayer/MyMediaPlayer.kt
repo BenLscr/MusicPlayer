@@ -4,9 +4,8 @@ import android.content.ContentUris
 import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.benlscr.musicplayer.shrunk.ShrunkViewModel
 
 object MyMediaPlayer : MediaPlayer.OnCompletionListener {
 
@@ -25,7 +24,7 @@ object MyMediaPlayer : MediaPlayer.OnCompletionListener {
     }
 
     fun startNewMusic(context: Context, id: Long) {
-        clearMediaPlayerIfNeed()
+        clearMediaPlayer()
         val contentUri: Uri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
         //mediaPlayer = MediaPlayer.create(context, contentUri)
         mediaPlayer.apply {
@@ -36,11 +35,9 @@ object MyMediaPlayer : MediaPlayer.OnCompletionListener {
         start()
     }
 
-    private fun clearMediaPlayerIfNeed() {
-        if (isPlaying()) {
-            stop()
-            reset()
-        }
+    private fun clearMediaPlayer() {
+        stop()
+        reset()
     }
 
     fun start() = mediaPlayer.start()

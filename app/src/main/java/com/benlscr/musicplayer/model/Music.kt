@@ -7,5 +7,6 @@ class Music(
     val album: String,
     val albumId: Long,
     var needToBePlayed: Boolean = false,
-    var isInMediaPlayer: Boolean = false
+    var isInMediaPlayer: Boolean = false,
+    var onlyUiNeedUpdate: Boolean = false
 )

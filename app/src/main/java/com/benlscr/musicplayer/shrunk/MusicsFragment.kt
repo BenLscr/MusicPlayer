@@ -1,4 +1,4 @@
-package com.benlscr.musicplayer
+package com.benlscr.musicplayer.shrunk
 
 import android.content.Context
 import android.os.Bundle
@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.benlscr.musicplayer.R
 import com.benlscr.musicplayer.model.Music
 
 class MusicsFragment : Fragment() {
 
-    private val musicRecyclerViewAdapter = MusicRecyclerViewAdapter()
+    private val musicRecyclerViewAdapter =
+        MusicRecyclerViewAdapter()
     private var listener: OnListFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
