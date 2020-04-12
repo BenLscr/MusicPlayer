@@ -83,6 +83,7 @@ class ShrunkViewModel : ViewModel() {
                 // The first music played take this way
                 currentIndex = index
                 music.needToBePlayed = true
+                music.isInMediaPlayer = false
                 music.onlyUiNeedUpdate = false
                 _currentMusic.value = music
             } else if (music.id == idSelected && idSelected == _currentMusic.value?.id) {

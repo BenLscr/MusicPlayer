@@ -126,13 +126,13 @@ class ShrunkActivity : AppCompatActivity(),
         }
     }
 
-    fun skipBackwardButton(view: View) {
+    fun skipBackwardShrunkButton(view: View) {
         binding.skipBackwardShrink.setOnClickListener {
             shrunkViewModel.skipBackward()
         }
     }
 
-    fun skipForwardButton(view: View) {
+    fun skipForwardShrunkButton(view: View) {
         binding.skipForwardShrink.setOnClickListener {
             shrunkViewModel.skipForward()
         }

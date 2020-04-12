@@ -101,4 +101,13 @@ class ExpandViewModel : ViewModel() {
         _albumImage.value = albumArtUri
     }
 
+    fun playOrPause() {
+        // For the moment doesn't handle the first show if no music is currently in MediaPlayer
+        val music = _currentMusic.value
+        music?.onlyUiNeedUpdate = false
+        music?.isInMediaPlayer = true
+        music?.needToBePlayed = !MyMediaPlayer.isPlaying()
+        _currentMusic.value = music
+    }
+
 }

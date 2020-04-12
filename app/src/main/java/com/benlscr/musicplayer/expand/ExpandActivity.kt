@@ -13,6 +13,7 @@ import com.benlscr.musicplayer.ID_FOR_SHRUNK_ACT
 import com.benlscr.musicplayer.R
 import com.benlscr.musicplayer.databinding.ActivityExpandBinding
 import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.activity_expand.*
 
 class ExpandActivity : AppCompatActivity() {
 
@@ -53,7 +54,7 @@ class ExpandActivity : AppCompatActivity() {
                     music.onlyUiNeedUpdate
                 )
                 expandViewModel.showAlbumArtInConsole(music.albumId)
-                updateExpandUi(music.title, music.artist)
+                updateExpandUi(music.title, music.artist, music.needToBePlayed)
             }
         )
         expandViewModel.albumImage.observe(
@@ -62,9 +63,14 @@ class ExpandActivity : AppCompatActivity() {
         )
     }
 
-    private fun updateExpandUi(title: String, artist: String) {
+    private fun updateExpandUi(title: String, artist: String, needToBePlayed: Boolean) {
         binding.titleExpand.text = title
         binding.artistExpand.text = artist
+        if (needToBePlayed) {
+            binding.consolePlayExpand.setImageResource(R.drawable.console_pause_expand)
+        } else {
+            binding.consolePlayExpand.setImageResource(R.drawable.console_play_expand)
+        }
     }
 
     private fun showAlbumArt(albumArt: Uri) =
@@ -97,4 +103,17 @@ class ExpandActivity : AppCompatActivity() {
         }
         finish()
     }
+
+    fun skipBackwardExpandButton(view: View) {
+
+    }
+
+    fun playPauseExpandButton(view: View) {
+        expandViewModel.playOrPause()
+    }
+
+    fun skipForwardExpandButton(view: View) {
+
+    }
+
 }

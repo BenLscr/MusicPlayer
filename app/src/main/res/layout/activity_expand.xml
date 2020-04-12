@@ -170,6 +170,7 @@
 
             <Button
                 android:id="@+id/skip_backward_expand"
+                android:onClick="skipBackwardExpandButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="4"
@@ -177,6 +178,7 @@
 
             <Button
                 android:id="@+id/play_pause_expand"
+                android:onClick="playPauseExpandButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
@@ -184,6 +186,7 @@
 
             <Button
                 android:id="@+id/skip_forward_expand"
+                android:onClick="skipForwardExpandButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="4"
