@@ -94,7 +94,7 @@ class ExpandActivity : AppCompatActivity() {
 
     fun shrunkButton(view: View) {
         expandViewModel.currentMusic.value?.let { music ->
-            if (music.isInMediaPlayer) {
+            if (music.isInMediaPlayer || music.needToBePlayed) {
                 val intent = Intent()
                 intent.putExtra(ID_FOR_SHRUNK_ACT, music.id)
                 setResult(Activity.RESULT_CANCELED, intent)
@@ -104,7 +104,7 @@ class ExpandActivity : AppCompatActivity() {
     }
 
     fun skipBackwardExpandButton(view: View) {
-
+        expandViewModel.skipBackward()
     }
 
     fun playPauseExpandButton(view: View) {

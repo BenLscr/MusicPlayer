@@ -115,6 +115,35 @@ class ExpandViewModel : ViewModel() {
         _albumImage.value = albumArtUri
     }
 
+    fun skipBackward() {
+        _musics.value?.let { _musics ->
+            if (_musics.isNotEmpty() && currentIndex != -1) {
+                if (MyMediaPlayer.currentPosition() < 5000) {
+                    if (currentIndex == 0) {
+                        currentIndex = _musics.size -1
+                    } else if (currentIndex > 0) {
+                        currentIndex -= 1
+                    }
+                    _musics[currentIndex].needToBePlayed = true
+                    _musics[currentIndex].onlyUiNeedUpdate = false
+                    _currentMusic.value = _musics[currentIndex]
+                } else {
+                    /**
+                     * MyMediaPlayer.restart with seekTo
+                     */
+                    MyMediaPlayer.startNewMusic(
+                        context,
+                        _musics[currentIndex].id
+                    )
+                }
+            } else {
+                /**
+                 * Need a snackbar for error
+                 * */
+            }
+        }
+    }
+
     fun playOrPause() {
         needFirstMusic?.let { needFirstMusic ->
             if (needFirstMusic) {
