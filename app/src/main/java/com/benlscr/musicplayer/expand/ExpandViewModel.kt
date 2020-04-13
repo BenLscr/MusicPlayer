@@ -15,6 +15,7 @@ import com.benlscr.musicplayer.model.Music
 class ExpandViewModel : ViewModel() {
 
     private lateinit var context: Context
+    private var needFirstMusic: Boolean? = null
     private val _musics = MutableLiveData<List<Music>>()
     private val _currentMusic = MutableLiveData<Music>()
     val currentMusic: LiveData<Music> = _currentMusic
@@ -69,6 +70,7 @@ class ExpandViewModel : ViewModel() {
     }
 
     fun idFromShrunkAct(idFromShrunkAct: Long) {
+        needFirstMusic = false
         _musics.value?.let { _musics ->
             _musics.forEachIndexed { index, music ->
                 if (music.id == idFromShrunkAct) {
@@ -79,6 +81,18 @@ class ExpandViewModel : ViewModel() {
                     _currentMusic.value = music
                 }
             }
+        }
+    }
+
+    fun showFirstMusic() {
+        _musics.value?.let { _musics ->
+            needFirstMusic = true
+            currentIndex = 0
+            val music = _musics[0]
+            music.onlyUiNeedUpdate = true
+            music.isInMediaPlayer = false
+            music.needToBePlayed = false
+            _currentMusic.value =_musics[0]
         }
     }
 
@@ -102,12 +116,22 @@ class ExpandViewModel : ViewModel() {
     }
 
     fun playOrPause() {
-        // For the moment doesn't handle the first show if no music is currently in MediaPlayer
-        val music = _currentMusic.value
-        music?.onlyUiNeedUpdate = false
-        music?.isInMediaPlayer = true
-        music?.needToBePlayed = !MyMediaPlayer.isPlaying()
-        _currentMusic.value = music
+        needFirstMusic?.let { needFirstMusic ->
+            if (needFirstMusic) {
+                this.needFirstMusic = false
+                val music = _currentMusic.value
+                music?.onlyUiNeedUpdate = false
+                music?.needToBePlayed = true
+                music?.isInMediaPlayer = false
+                _currentMusic.value = music
+            } else {
+                val music = _currentMusic.value
+                music?.onlyUiNeedUpdate = false
+                music?.isInMediaPlayer = true
+                music?.needToBePlayed = !MyMediaPlayer.isPlaying()
+                _currentMusic.value = music
+            }
+        }
     }
 
 }

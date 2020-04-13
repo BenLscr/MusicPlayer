@@ -13,7 +13,6 @@ import com.benlscr.musicplayer.ID_FOR_SHRUNK_ACT
 import com.benlscr.musicplayer.R
 import com.benlscr.musicplayer.databinding.ActivityExpandBinding
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.activity_expand.*
 
 class ExpandActivity : AppCompatActivity() {
 
@@ -87,7 +86,7 @@ class ExpandActivity : AppCompatActivity() {
                 expandViewModel.idFromShrunkAct(idFromShrunkAct)
             }
         } else {
-            //showFirstMusic
+            expandViewModel.showFirstMusic()
         }
     }
 
