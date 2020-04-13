@@ -118,24 +118,18 @@ class ShrunkActivity : AppCompatActivity(),
     /* ---------- LISTENERS FROM LAYOUT ---------- */
 
     fun expandButton(view: View) {
-        binding.expand.setOnClickListener {
-            val intent = Intent(this, ExpandActivity::class.java)
-            val idForExpandAct: Long? = shrunkViewModel.currentMusic.value?.id
-            idForExpandAct?.let { intent.putExtra(ID_FOR_EXPAND_ACT, it) }
-            startActivityForResult(intent, REQUEST_CODE_SHRUNK_EXPAND)
-        }
+        val intent = Intent(this, ExpandActivity::class.java)
+        val idForExpandAct: Long? = shrunkViewModel.currentMusic.value?.id
+        idForExpandAct?.let { intent.putExtra(ID_FOR_EXPAND_ACT, it) }
+        startActivityForResult(intent, REQUEST_CODE_SHRUNK_EXPAND)
     }
 
     fun skipBackwardShrunkButton(view: View) {
-        binding.skipBackwardShrink.setOnClickListener {
-            shrunkViewModel.skipBackward()
-        }
+        shrunkViewModel.skipBackward()
     }
 
     fun skipForwardShrunkButton(view: View) {
-        binding.skipForwardShrink.setOnClickListener {
-            shrunkViewModel.skipForward()
-        }
+        shrunkViewModel.skipForward()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
