@@ -182,4 +182,10 @@ class ExpandViewModel : ViewModel() {
         }
     }
 
+    fun whenMusicEndSkipToTheNext(isFinished: Boolean) {
+        if (isFinished) {
+            skipForward()
+        }
+    }
+
 }

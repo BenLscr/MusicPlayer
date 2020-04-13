@@ -5,21 +5,27 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import com.benlscr.musicplayer.expand.ExpandViewModel
 import com.benlscr.musicplayer.shrunk.ShrunkViewModel
 
 object MyMediaPlayer : MediaPlayer.OnCompletionListener {
 
     private var mediaPlayer = MediaPlayer()
     private var shrunkViewModel: ShrunkViewModel? = null
-    //private var expandViewModel: ExpandViewModel? = null
+    private var expandViewModel: ExpandViewModel? = null
 
     fun isPlaying(): Boolean = mediaPlayer.isPlaying
 
     fun keepTheViewModel(viewModel: ViewModel) {
-        // When expandViewModel will be dev, set null to the other viewModel
         when (viewModel) {
-            is ShrunkViewModel -> shrunkViewModel = viewModel
-            //is ExpandViewModel -> expandViewModel = viewModel
+            is ShrunkViewModel -> {
+                shrunkViewModel = viewModel
+                expandViewModel = null
+            }
+            is ExpandViewModel -> {
+                shrunkViewModel = null
+                expandViewModel = viewModel
+            }
         }
     }
 
@@ -53,13 +59,10 @@ object MyMediaPlayer : MediaPlayer.OnCompletionListener {
     fun currentPosition(): Int = mediaPlayer.currentPosition
 
     override fun onCompletion(p0: MediaPlayer?) {
-        /**
-         * L'idée est que le VM est donnée à chaque fois que resume est déclenché par les activity
-         */
         reset()
         when {
             shrunkViewModel != null -> shrunkViewModel?.whenMusicEndSkipToTheNext(true)
-            //expandViewModel != null -> expandViewModel?.whenMusicEndSkipToTheNext(true)
+            expandViewModel != null -> expandViewModel?.whenMusicEndSkipToTheNext(true)
         }
     }
 
