@@ -163,4 +163,23 @@ class ExpandViewModel : ViewModel() {
         }
     }
 
+    fun skipForward() {
+        _musics.value?.let { _musics ->
+            if (_musics.isNotEmpty() && currentIndex != -1) {
+                if (currentIndex == _musics.size -1) {
+                    currentIndex = 0
+                } else {
+                    currentIndex += 1
+                }
+                _musics[currentIndex].needToBePlayed = true
+                _musics[currentIndex].onlyUiNeedUpdate = false
+                _currentMusic.value = _musics[currentIndex]
+            } else {
+                /**
+                 * Need a snackbar for error
+                 * */
+            }
+        }
+    }
+
 }

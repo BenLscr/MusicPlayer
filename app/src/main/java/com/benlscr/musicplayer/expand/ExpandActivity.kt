@@ -112,7 +112,7 @@ class ExpandActivity : AppCompatActivity() {
     }
 
     fun skipForwardExpandButton(view: View) {
-
+        expandViewModel.skipForward()
     }
 
 }
