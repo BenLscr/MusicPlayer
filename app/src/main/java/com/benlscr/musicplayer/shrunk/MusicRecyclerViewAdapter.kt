@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.benlscr.musicplayer.R
-import com.benlscr.musicplayer.model.Music
+import com.benlscr.musicplayer.shrunk.model.Music
 import com.benlscr.musicplayer.shrunk.MusicsFragment.OnListFragmentInteractionListener
 import kotlinx.android.synthetic.main.fragment_music.view.*
 

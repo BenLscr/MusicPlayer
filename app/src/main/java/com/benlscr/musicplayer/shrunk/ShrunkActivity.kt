@@ -16,7 +16,7 @@ import com.benlscr.musicplayer.R
 import com.benlscr.musicplayer.REQUEST_CODE_SHRUNK_EXPAND
 import com.benlscr.musicplayer.databinding.ActivityShrunkBinding
 import com.benlscr.musicplayer.expand.ExpandActivity
-import com.benlscr.musicplayer.model.Music
+import com.benlscr.musicplayer.shrunk.model.Music
 import com.bumptech.glide.Glide
 import com.sembozdemir.permissionskt.askPermissions
 

@@ -4,12 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.benlscr.musicplayer.ID_FOR_EXPAND_ACT
 import com.benlscr.musicplayer.ID_FOR_SHRUNK_ACT
+import com.benlscr.musicplayer.MyMediaPlayer
 import com.benlscr.musicplayer.R
 import com.benlscr.musicplayer.databinding.ActivityExpandBinding
 import com.bumptech.glide.Glide
@@ -19,6 +21,7 @@ class ExpandActivity : AppCompatActivity() {
     private lateinit var binding: ActivityExpandBinding
     private val expandViewModel: ExpandViewModel
             by lazy { ViewModelProvider(this).get(ExpandViewModel::class.java) }
+    private val seekHandler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,11 +59,31 @@ class ExpandActivity : AppCompatActivity() {
                 updateExpandUi(music.title, music.artist, music.needToBePlayed)
             }
         )
+        expandViewModel.curMusicDuration.observe(
+            this,
+            Observer { duration ->
+                setMaxSeekBar(duration)
+                updateSeekBar()
+            }
+        )
         expandViewModel.albumImage.observe(
             this,
             Observer { showAlbumArt(it) }
         )
     }
+
+    private fun setMaxSeekBar(duration: Int) {
+        binding.seekBar.max = duration
+        binding.endTime.text = expandViewModel.milliSecondsToTimer(duration)
+    }
+
+    private fun updateSeekBar() {
+        binding.currentTime.text = expandViewModel.milliSecondsToTimer(MyMediaPlayer.currentPosition())
+        binding.seekBar.progress = MyMediaPlayer.currentPosition()
+        seekHandler.postDelayed(runnable, 100)
+    }
+
+    private val runnable = Runnable { updateSeekBar() }
 
     private fun updateExpandUi(title: String, artist: String, needToBePlayed: Boolean) {
         binding.titleExpand.text = title

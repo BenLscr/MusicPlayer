@@ -10,7 +10,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.benlscr.musicplayer.MyMediaPlayer
-import com.benlscr.musicplayer.model.Music
+import com.benlscr.musicplayer.expand.model.Music
 
 class ExpandViewModel : ViewModel() {
 
@@ -22,6 +22,8 @@ class ExpandViewModel : ViewModel() {
     private var currentIndex: Int = -1
     private val _albumImage = MutableLiveData<Uri>()
     val albumImage: LiveData<Uri> = _albumImage
+    private val _curMusicDuration = MutableLiveData<Int>()
+    val curMusicDuration: LiveData<Int> = _curMusicDuration
 
     fun keepContextFromActivity(context: Context) {
         this.context = context
@@ -45,26 +47,21 @@ class ExpandViewModel : ViewModel() {
                 val idColumn: Int = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID)
                 val titleColumn: Int = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE)
                 val artistColumn: Int = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST)
-                val albumColumn: Int = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ALBUM)
                 val albumIdColumn: Int = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ALBUM_ID)
-                fillMusicList(cursor, idColumn, titleColumn, artistColumn, albumColumn, albumIdColumn)
+                fillMusicList(cursor, idColumn, titleColumn, artistColumn, albumIdColumn)
             }
         }
         cursor?.close()
     }
 
-    private fun fillMusicList(cursor: Cursor, idColumn: Int, titleColumn: Int, artistColumn: Int, albumColumn: Int, albumIdColumn: Int) {
+    private fun fillMusicList(cursor: Cursor, idColumn: Int, titleColumn: Int, artistColumn: Int, albumIdColumn: Int) {
         val list = ArrayList<Music>()
         do {
             val thisId = cursor.getLong(idColumn)
-            var thisTitle = cursor.getString(titleColumn)
+            val thisTitle = cursor.getString(titleColumn)
             val thisArtist = cursor.getString(artistColumn)
-            val thisAlbum = cursor.getString(albumColumn)
             val thisAlbumId = cursor.getLong(albumIdColumn)
-            if (thisTitle.length >= 25) {
-                thisTitle = thisTitle.substring(0, 30) + "..."
-            }
-            list.add(Music(thisId, thisTitle, thisArtist, thisAlbum, thisAlbumId))
+            list.add(Music(thisId, thisTitle, thisArtist, thisAlbumId))
         } while (cursor.moveToNext())
         _musics.value = list
     }
@@ -102,10 +99,15 @@ class ExpandViewModel : ViewModel() {
                 MyMediaPlayer.start()
             } else if (needToBePlayed && !isInMediaPlayer) {
                 MyMediaPlayer.startNewMusic(context, id)
+                updateDurationValue()
             } else if (!needToBePlayed && isInMediaPlayer) {
                 MyMediaPlayer.pause()
             }
         }
+    }
+
+    private fun updateDurationValue() {
+        _curMusicDuration.value = MyMediaPlayer.duration()
     }
 
     fun showAlbumArtInConsole(albumId: Long) {
@@ -186,6 +188,31 @@ class ExpandViewModel : ViewModel() {
         if (isFinished) {
             skipForward()
         }
+    }
+
+    fun milliSecondsToTimer(milliseconds: Int): String {
+        var finalTimerString = ""
+        var secondsString = ""
+
+        // Convert total duration into time
+        val hours = (milliseconds / (1000 * 60 * 60))
+        val minutes = (milliseconds % (1000 * 60 * 60)) / (1000 * 60)
+        val seconds = (milliseconds % (1000 * 60 * 60) % (1000 * 60) / 1000)
+        // Add hours if there
+        if (hours > 0) {
+            finalTimerString = "$hours:"
+        }
+
+        // Prepending 0 to seconds if it is one digit
+        secondsString = if (seconds < 10) {
+            "0$seconds"
+        } else {
+            "" + seconds
+        }
+        finalTimerString = "$finalTimerString$minutes:$secondsString"
+
+        // return timer string
+        return finalTimerString
     }
 
 }

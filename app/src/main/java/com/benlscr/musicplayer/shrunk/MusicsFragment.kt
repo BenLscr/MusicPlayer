@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.benlscr.musicplayer.R
-import com.benlscr.musicplayer.model.Music
+import com.benlscr.musicplayer.shrunk.model.Music
 
 class MusicsFragment : Fragment() {
 

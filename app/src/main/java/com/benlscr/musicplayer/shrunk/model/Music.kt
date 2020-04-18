@@ -1,4 +1,4 @@
-package com.benlscr.musicplayer.model
+package com.benlscr.musicplayer.shrunk.model
 
 class Music(
     val id: Long,

@@ -10,7 +10,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.benlscr.musicplayer.MyMediaPlayer
-import com.benlscr.musicplayer.model.Music
+import com.benlscr.musicplayer.shrunk.model.Music
 
 class ShrunkViewModel : ViewModel() {
 

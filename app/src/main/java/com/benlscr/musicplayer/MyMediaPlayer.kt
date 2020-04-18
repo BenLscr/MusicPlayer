@@ -58,6 +58,8 @@ object MyMediaPlayer : MediaPlayer.OnCompletionListener {
 
     fun currentPosition(): Int = mediaPlayer.currentPosition
 
+    fun duration(): Int = mediaPlayer.duration
+
     override fun onCompletion(p0: MediaPlayer?) {
         reset()
         when {
