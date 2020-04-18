@@ -104,7 +104,11 @@ class ExpandViewModel : ViewModel() {
     fun skipBackward() {
         _musics.value?.let { _musics ->
             if (_musics.isNotEmpty() && currentIndex != -1) {
-                if (MyMediaPlayer.currentPosition() < 5000) {
+                if (MyMediaPlayer.currentPosition() < 5000
+                    &&
+                    MyMediaPlayer.isPlaying()
+                    ||
+                    MyMediaPlayer.currentPosition() == 0) {
                     if (currentIndex == 0) {
                         currentIndex = _musics.size - 1
                     } else if (currentIndex > 0) {
