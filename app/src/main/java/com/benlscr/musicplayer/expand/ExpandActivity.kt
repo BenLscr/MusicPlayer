@@ -6,6 +6,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -32,6 +34,7 @@ class ExpandActivity : AppCompatActivity() {
         lookForMusics()
         setObservers()
         retrievesIntent()
+        manageSeekBarListener()
     }
 
     override fun onResume() {
@@ -110,6 +113,21 @@ class ExpandActivity : AppCompatActivity() {
         } else {
             expandViewModel.prepareFirstMusic()
         }
+    }
+
+    private fun manageSeekBarListener() {
+        binding.seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                if (fromUser) {
+                    expandViewModel.eventOnSeekBarFromUser(progress)
+                }
+                /*fromUser.let {
+                    expandViewModel.eventOnSeekBarFromUser(progress)
+                }*/
+            }
+        })
     }
 
     /* ---------- LISTENERS FROM LAYOUT ---------- */

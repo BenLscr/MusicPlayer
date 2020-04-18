@@ -61,6 +61,8 @@ object MyMediaPlayer : MediaPlayer.OnCompletionListener {
 
     fun reset() = mediaPlayer.reset()
 
+    fun seekTo(milliseconds: Int) = mediaPlayer.seekTo(milliseconds)
+
     fun restart() = mediaPlayer.seekTo(0)
 
     fun release() = mediaPlayer.release()

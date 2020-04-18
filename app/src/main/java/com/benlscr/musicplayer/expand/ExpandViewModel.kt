@@ -206,4 +206,8 @@ class ExpandViewModel : ViewModel() {
         return finalTimerString
     }
 
+    fun eventOnSeekBarFromUser(progress: Int) {
+        MyMediaPlayer.seekTo(progress)
+    }
+
 }
