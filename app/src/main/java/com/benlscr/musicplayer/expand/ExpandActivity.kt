@@ -49,14 +49,9 @@ class ExpandActivity : AppCompatActivity() {
         expandViewModel.currentMusic.observe(
             this,
             Observer { music ->
-                expandViewModel.updateMediaPlayer(
-                    music.id,
-                    music.needToBePlayed,
-                    music.isInMediaPlayer,
-                    music.onlyUiNeedUpdate
-                )
+                expandViewModel.updateDurationValue()
                 expandViewModel.showAlbumArtInConsole(music.albumId)
-                updateExpandUi(music.title, music.artist, music.needToBePlayed)
+                updateTitleAndArtist(music.title, music.artist)
             }
         )
         expandViewModel.curMusicDuration.observe(
@@ -69,6 +64,12 @@ class ExpandActivity : AppCompatActivity() {
         expandViewModel.albumImage.observe(
             this,
             Observer { showAlbumArt(it) }
+        )
+        expandViewModel.buttonPlayOrPause.observe(
+            this,
+            Observer { drawable ->
+                updatePlayOrPauseDrawableButton(drawable)
+            }
         )
     }
 
@@ -85,14 +86,9 @@ class ExpandActivity : AppCompatActivity() {
 
     private val runnable = Runnable { updateSeekBar() }
 
-    private fun updateExpandUi(title: String, artist: String, needToBePlayed: Boolean) {
+    private fun updateTitleAndArtist(title: String, artist: String) {
         binding.titleExpand.text = title
         binding.artistExpand.text = artist
-        if (needToBePlayed) {
-            binding.consolePlayExpand.setImageResource(R.drawable.console_pause_expand)
-        } else {
-            binding.consolePlayExpand.setImageResource(R.drawable.console_play_expand)
-        }
     }
 
     private fun showAlbumArt(albumArt: Uri) =
@@ -102,6 +98,9 @@ class ExpandActivity : AppCompatActivity() {
             .error(R.drawable.album_image)
             .into(binding.albumImageExpand)
 
+    private fun updatePlayOrPauseDrawableButton(drawable: Int) =
+        binding.consolePlayExpand.setImageResource(drawable)
+
     private fun retrievesIntent() {
         if (intent.hasExtra(ID_FOR_EXPAND_ACT)) {
             val idFromShrunkAct = intent.getLongExtra(ID_FOR_EXPAND_ACT, -1L)
@@ -109,7 +108,7 @@ class ExpandActivity : AppCompatActivity() {
                 expandViewModel.idFromShrunkAct(idFromShrunkAct)
             }
         } else {
-            expandViewModel.showFirstMusic()
+            expandViewModel.prepareFirstMusic()
         }
     }
 
@@ -117,7 +116,7 @@ class ExpandActivity : AppCompatActivity() {
 
     fun shrunkButton(view: View) {
         expandViewModel.currentMusic.value?.let { music ->
-            if (music.isInMediaPlayer || music.needToBePlayed) {
+            if (MyMediaPlayer.currentPosition() != 0) {
                 val intent = Intent()
                 intent.putExtra(ID_FOR_SHRUNK_ACT, music.id)
                 setResult(Activity.RESULT_CANCELED, intent)
