@@ -66,7 +66,9 @@ class ExpandActivity : AppCompatActivity() {
         )
         expandViewModel.albumImage.observe(
             this,
-            Observer { showAlbumArt(it) }
+            Observer { uri ->
+                showAlbumArt(uri)
+            }
         )
         expandViewModel.buttonPlayOrPause.observe(
             this,
@@ -82,7 +84,8 @@ class ExpandActivity : AppCompatActivity() {
     }
 
     private fun updateSeekBar() {
-        binding.currentTime.text = expandViewModel.milliSecondsToTimer(MyMediaPlayer.currentPosition())
+        binding.currentTime.text =
+            expandViewModel.milliSecondsToTimer(MyMediaPlayer.currentPosition())
         binding.seekBar.progress = MyMediaPlayer.currentPosition()
         seekHandler.postDelayed(runnable, 100)
     }
@@ -123,9 +126,6 @@ class ExpandActivity : AppCompatActivity() {
                 if (fromUser) {
                     expandViewModel.eventOnSeekBarFromUser(progress)
                 }
-                /*fromUser.let {
-                    expandViewModel.eventOnSeekBarFromUser(progress)
-                }*/
             }
         })
     }

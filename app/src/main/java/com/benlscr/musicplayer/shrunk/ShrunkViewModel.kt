@@ -10,7 +10,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.benlscr.musicplayer.MyMediaPlayer
+import com.benlscr.musicplayer.R
 import com.benlscr.musicplayer.shrunk.model.Music
+import com.benlscr.musicplayer.shrunk.model.MusicItemList
 
 class ShrunkViewModel : ViewModel() {
 
@@ -19,11 +21,14 @@ class ShrunkViewModel : ViewModel() {
     val musics: LiveData<List<Music>> = _musics
     private val _currentMusic = MutableLiveData<Music>()
     val currentMusic: LiveData<Music> = _currentMusic
-    private var currentIndex: Int = -1 // Use for skip buttons
+    private var currentIndex: Int = -1
     private val _albumImage = MutableLiveData<Uri>()
     val albumImage: LiveData<Uri> = _albumImage
     private val _albumAndArtist = MutableLiveData<String>()
-    val albumAndArtist : LiveData<String> = _albumAndArtist
+    val albumAndArtist: LiveData<String> = _albumAndArtist
+    private val _musicsItemList = MutableLiveData<List<MusicItemList>>()
+    val musicsItemList: LiveData<List<MusicItemList>> = _musicsItemList
+    private var isThisTheEnd: Boolean = false
 
     override fun onCleared() {
         super.onCleared()
@@ -49,18 +54,37 @@ class ShrunkViewModel : ViewModel() {
                 Log.e("SearchForMusic", "No media on the device")
             }
             else -> {
-                val idColumn: Int = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID)
-                val titleColumn: Int = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE)
-                val artistColumn: Int = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST)
-                val albumColumn: Int = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ALBUM)
-                val albumIdColumn: Int = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ALBUM_ID)
-                fillMusicList(cursor, idColumn, titleColumn, artistColumn, albumColumn, albumIdColumn)
+                val idColumn: Int =
+                    cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID)
+                val titleColumn: Int =
+                    cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE)
+                val artistColumn: Int =
+                    cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST)
+                val albumColumn: Int =
+                    cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ALBUM)
+                val albumIdColumn: Int =
+                    cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ALBUM_ID)
+                fillMusicList(
+                    cursor,
+                    idColumn,
+                    titleColumn,
+                    artistColumn,
+                    albumColumn,
+                    albumIdColumn
+                )
             }
         }
         cursor?.close()
     }
 
-    private fun fillMusicList(cursor: Cursor, idColumn: Int, titleColumn: Int, artistColumn: Int, albumColumn: Int, albumIdColumn: Int) {
+    private fun fillMusicList(
+        cursor: Cursor,
+        idColumn: Int,
+        titleColumn: Int,
+        artistColumn: Int,
+        albumColumn: Int,
+        albumIdColumn: Int
+    ) {
         val list = ArrayList<Music>()
         do {
             val thisId = cursor.getLong(idColumn)
@@ -76,37 +100,71 @@ class ShrunkViewModel : ViewModel() {
         _musics.value = list
     }
 
-    fun eventFromListFragment(idSelected: Long) {
-        _musics.value!!.forEachIndexed { index, music ->
-            if (music.id == idSelected && idSelected != _currentMusic.value?.id) {
-                // If it's this music in the list and it's not the same currently in the MediaPlayer
-                // The first music played take this way
-                currentIndex = index
-                music.needToBePlayed = true
-                music.isInMediaPlayer = false
-                music.onlyUiNeedUpdate = false
-                _currentMusic.value = music
-            } else if (music.id == idSelected && idSelected == _currentMusic.value?.id) {
-                // If it's this music in the list and it's the current music used by the MediaPlayer
-                currentIndex = index
-                music.needToBePlayed = !MyMediaPlayer.isPlaying()
-                music.isInMediaPlayer = true
-                music.onlyUiNeedUpdate = false
-                _currentMusic.value = music
+    fun prepareMusicsItemList() {
+        val list = ArrayList<MusicItemList>()
+        _musics.value?.let { _musics ->
+            for (music in _musics) {
+                val musicItemList = MusicItemList(
+                    id = music.id,
+                    title = music.title,
+                    artist = music.artist,
+                    button = R.drawable.button_play_shrink,
+                    background = null
+                )
+                list.add(musicItemList)
             }
+        }
+        _musicsItemList.value = list
+    }
+
+    fun eventFromListFragment(idSelected: Long) {
+        if (_currentMusic.value?.id != idSelected) {
+            MyMediaPlayer.prepare(context, idSelected)
+        }
+        playOrPause()
+        updateMusicListForFragment(idSelected)
+    }
+
+    private fun playOrPause() {
+        if (MyMediaPlayer.isPlaying()) {
+            MyMediaPlayer.pause()
+        } else {
+            MyMediaPlayer.start()
         }
     }
 
-    fun updateMediaPlayer(id: Long, needToBePlayed: Boolean, isInMediaPlayer: Boolean, onlyUiNeedUpdate: Boolean) {
-        if (!onlyUiNeedUpdate) {
-            if (needToBePlayed && isInMediaPlayer) {
-                MyMediaPlayer.start()
-            } else if (needToBePlayed && !isInMediaPlayer) {
-                MyMediaPlayer.startNewMusic(context, id)
-            } else if (!needToBePlayed && isInMediaPlayer) {
-                MyMediaPlayer.pause()
+    private fun updateMusicListForFragment(id: Long) {
+        val list = ArrayList<MusicItemList>()
+        _musics.value?.let { _musics ->
+            _musics.forEachIndexed { index, music ->
+                val musicItemList: MusicItemList
+                if (music.id == id) {
+                    currentIndex = index
+                    _currentMusic.value = music
+                    musicItemList = MusicItemList(
+                        id = music.id,
+                        title = music.title,
+                        artist = music.artist,
+                        button = if (MyMediaPlayer.isPlaying()) {
+                            R.drawable.button_pause_shrink
+                        } else {
+                            R.drawable.button_play_shrink
+                        },
+                        background = R.drawable.background_current_music
+                    )
+                } else {
+                    musicItemList = MusicItemList(
+                        id = music.id,
+                        title = music.title,
+                        artist = music.artist,
+                        button = R.drawable.button_play_shrink,
+                        background = null
+                    )
+                }
+                list.add(musicItemList)
             }
         }
+        _musicsItemList.value = list
     }
 
     fun showAlbumArtInConsole(albumId: Long) {
@@ -123,23 +181,22 @@ class ShrunkViewModel : ViewModel() {
     fun skipBackward() {
         _musics.value?.let { _musics ->
             if (_musics.isNotEmpty() && currentIndex != -1) {
-                if (MyMediaPlayer.currentPosition() < 5000) {
+                if (MyMediaPlayer.currentPosition() < 5000
+                    &&
+                    MyMediaPlayer.isPlaying()
+                    ||
+                    MyMediaPlayer.currentPosition() == 0
+                ) {
                     if (currentIndex == 0) {
-                        currentIndex = _musics.size -1
+                        currentIndex = _musics.size - 1
                     } else if (currentIndex > 0) {
                         currentIndex -= 1
                     }
-                    _musics[currentIndex].needToBePlayed = true
-                    _musics[currentIndex].onlyUiNeedUpdate = false
                     _currentMusic.value = _musics[currentIndex]
+                    updateMusicListForFragment(_currentMusic.value!!.id)
+                    needToPlayOrJustPrepare(_currentMusic.value!!.id)
                 } else {
-                    /**
-                     * MyMediaPlayer.restart with seekTo
-                     */
-                    MyMediaPlayer.startNewMusic(
-                        context,
-                        _musics[currentIndex].id
-                    )
+                    MyMediaPlayer.restart()
                 }
             } else {
                 /**
@@ -147,19 +204,35 @@ class ShrunkViewModel : ViewModel() {
                  * */
             }
         }
+    }
+
+    private fun needToPlayOrJustPrepare(id: Long) {
+        if (MyMediaPlayer.isPlaying() || isThisTheEnd) {
+            if (isThisTheEnd) {
+                isThisTheEnd = false
+            }
+            playNewMusic(id)
+        } else {
+            MyMediaPlayer.prepare(context, id)
+        }
+    }
+
+    private fun playNewMusic(id: Long) {
+        MyMediaPlayer.prepare(context, id)
+        MyMediaPlayer.start()
     }
 
     fun skipForward() {
         _musics.value?.let { _musics ->
             if (_musics.isNotEmpty() && currentIndex != -1) {
-                if (currentIndex == _musics.size -1) {
+                if (currentIndex == _musics.size - 1) {
                     currentIndex = 0
                 } else {
                     currentIndex += 1
                 }
-                _musics[currentIndex].needToBePlayed = true
-                _musics[currentIndex].onlyUiNeedUpdate = false
                 _currentMusic.value = _musics[currentIndex]
+                updateMusicListForFragment(_currentMusic.value!!.id)
+                needToPlayOrJustPrepare(_currentMusic.value!!.id)
             } else {
                 /**
                  * Need a snackbar for error
@@ -168,31 +241,26 @@ class ShrunkViewModel : ViewModel() {
         }
     }
 
-    fun whenMusicEndSkipToTheNext(isFinished: Boolean) {
-        if (isFinished) {
-            skipForward()
-        }
+    fun whenMusicEndSkipToTheNext() {
+        isThisTheEnd = true
+        skipForward()
     }
 
     fun idFromExpandActivity(idFromExpandAct: Long) {
-        if (idFromExpandAct != _currentMusic.value?.id) {
+        if (idFromExpandAct == _currentMusic.value?.id) {
+            val music = _currentMusic.value
+            _currentMusic.value = music
+            updateMusicListForFragment(_currentMusic.value!!.id)
+        } else {
             _musics.value?.let { _musics ->
                 _musics.forEachIndexed { index, music ->
                     if (music.id == idFromExpandAct) {
                         currentIndex = index
-                        music.onlyUiNeedUpdate = true
-                        music.needToBePlayed = MyMediaPlayer.isPlaying()
-                        music.isInMediaPlayer = true
                         _currentMusic.value = music
+                        updateMusicListForFragment(music.id)
                     }
                 }
             }
-        } else {
-            val music = _currentMusic.value
-            music?.onlyUiNeedUpdate = true
-            music?.needToBePlayed = MyMediaPlayer.isPlaying()
-            music?.isInMediaPlayer = true
-            _currentMusic.value = music
         }
     }
 

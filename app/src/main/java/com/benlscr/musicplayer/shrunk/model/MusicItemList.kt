@@ -1,9 +1,9 @@
 package com.benlscr.musicplayer.shrunk.model
 
-class Music(
+class MusicItemList(
     val id: Long,
     val title: String,
     val artist: String,
-    val album: String,
-    val albumId: Long
+    var button: Int,
+    var background: Int?
 )

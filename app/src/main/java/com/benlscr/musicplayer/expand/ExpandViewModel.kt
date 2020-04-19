@@ -47,17 +47,27 @@ class ExpandViewModel : ViewModel() {
                 Log.e("SearchForMusic", "No media on the device")
             }
             else -> {
-                val idColumn: Int = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID)
-                val titleColumn: Int = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE)
-                val artistColumn: Int = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST)
-                val albumIdColumn: Int = cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ALBUM_ID)
+                val idColumn: Int =
+                    cursor.getColumnIndex(android.provider.MediaStore.Audio.Media._ID)
+                val titleColumn: Int =
+                    cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE)
+                val artistColumn: Int =
+                    cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ARTIST)
+                val albumIdColumn: Int =
+                    cursor.getColumnIndex(android.provider.MediaStore.Audio.Media.ALBUM_ID)
                 fillMusicList(cursor, idColumn, titleColumn, artistColumn, albumIdColumn)
             }
         }
         cursor?.close()
     }
 
-    private fun fillMusicList(cursor: Cursor, idColumn: Int, titleColumn: Int, artistColumn: Int, albumIdColumn: Int) {
+    private fun fillMusicList(
+        cursor: Cursor,
+        idColumn: Int,
+        titleColumn: Int,
+        artistColumn: Int,
+        albumIdColumn: Int
+    ) {
         val list = ArrayList<Music>()
         do {
             val thisId = cursor.getLong(idColumn)
@@ -108,7 +118,8 @@ class ExpandViewModel : ViewModel() {
                     &&
                     MyMediaPlayer.isPlaying()
                     ||
-                    MyMediaPlayer.currentPosition() == 0) {
+                    MyMediaPlayer.currentPosition() == 0
+                ) {
                     if (currentIndex == 0) {
                         currentIndex = _musics.size - 1
                     } else if (currentIndex > 0) {
@@ -140,7 +151,7 @@ class ExpandViewModel : ViewModel() {
     fun skipForward() {
         _musics.value?.let { _musics ->
             if (_musics.isNotEmpty() && currentIndex != -1) {
-                if (currentIndex == _musics.size -1) {
+                if (currentIndex == _musics.size - 1) {
                     currentIndex = 0
                 } else {
                     currentIndex += 1

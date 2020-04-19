@@ -9,12 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.benlscr.musicplayer.R
-import com.benlscr.musicplayer.shrunk.model.Music
+import com.benlscr.musicplayer.shrunk.model.MusicItemList
 
 class MusicsFragment : Fragment() {
 
-    private val musicRecyclerViewAdapter =
-        MusicRecyclerViewAdapter()
+    private val musicRecyclerViewAdapter = MusicRecyclerViewAdapter()
     private var listener: OnListFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,11 +54,8 @@ class MusicsFragment : Fragment() {
         fun onListFragmentInteraction(idSelected: Long)
     }
 
-    fun fillMusicsFragment(musics: List<Music>)
-            = musicRecyclerViewAdapter.fillMusicsFragment(musics, listener, context)
-
-    fun updateMusicsFragment(id: Long, needToBePlayed: Boolean, isInMediaPlayer: Boolean)
-            = musicRecyclerViewAdapter.updateMusicsFragment(id, needToBePlayed, isInMediaPlayer)
+    fun updateMusicsFragment(musics: List<MusicItemList>) =
+        musicRecyclerViewAdapter.updateMusicsFragment(musics, listener, context)
 
     companion object {
         @JvmStatic

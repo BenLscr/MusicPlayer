@@ -16,7 +16,7 @@ import com.benlscr.musicplayer.R
 import com.benlscr.musicplayer.REQUEST_CODE_SHRUNK_EXPAND
 import com.benlscr.musicplayer.databinding.ActivityShrunkBinding
 import com.benlscr.musicplayer.expand.ExpandActivity
-import com.benlscr.musicplayer.shrunk.model.Music
+import com.benlscr.musicplayer.shrunk.model.MusicItemList
 import com.bumptech.glide.Glide
 import com.sembozdemir.permissionskt.askPermissions
 
@@ -24,7 +24,7 @@ class ShrunkActivity : AppCompatActivity(),
     MusicsFragment.OnListFragmentInteractionListener {
 
     private lateinit var binding: ActivityShrunkBinding
-    private val shrunkViewModel : ShrunkViewModel
+    private val shrunkViewModel: ShrunkViewModel
             by lazy { ViewModelProvider(this).get(ShrunkViewModel::class.java) }
     private val musicsFragment =
         MusicsFragment.newInstance()
@@ -72,37 +72,39 @@ class ShrunkActivity : AppCompatActivity(),
     private fun setObservers() {
         shrunkViewModel.musics.observe(
             this,
-            Observer { fillMusicsFragment(it) }
+            Observer {
+                shrunkViewModel.prepareMusicsItemList()
+            }
+        )
+        shrunkViewModel.musicsItemList.observe(
+            this,
+            Observer { musics ->
+                fillMusicsFragment(musics)
+            }
         )
         shrunkViewModel.currentMusic.observe(
             this,
             Observer { music ->
-                shrunkViewModel.updateMediaPlayer(
-                    music.id,
-                    music.needToBePlayed,
-                    music.isInMediaPlayer,
-                    music.onlyUiNeedUpdate
-                )
                 shrunkViewModel.showAlbumArtInConsole(music.albumId)
                 shrunkViewModel.showAlbumAndArtistPlayedInConsole(music.album, music.artist)
-                updateMusicsFragment(music.id, music.needToBePlayed, music.isInMediaPlayer)
             }
         )
         shrunkViewModel.albumImage.observe(
             this,
-            Observer { showAlbumArt(it) }
+            Observer { uri ->
+                showAlbumArt(uri)
+            }
         )
         shrunkViewModel.albumAndArtist.observe(
             this,
-            Observer { showAlbumAndArtist(it) }
+            Observer { string ->
+                showAlbumAndArtist(string)
+            }
         )
     }
 
-    private fun fillMusicsFragment(musics: List<Music>) =
-        musicsFragment.fillMusicsFragment(musics)
-
-    private fun updateMusicsFragment(id: Long, needToBePlayed: Boolean, isInMediaPlayer: Boolean) =
-        musicsFragment.updateMusicsFragment(id , needToBePlayed, isInMediaPlayer)
+    private fun fillMusicsFragment(musics: List<MusicItemList>) =
+        musicsFragment.updateMusicsFragment(musics)
 
     private fun showAlbumArt(albumArt: Uri) =
         Glide.with(applicationContext)

@@ -29,22 +29,12 @@ object MyMediaPlayer : MediaPlayer.OnCompletionListener {
         }
     }
 
-    fun startNewMusic(context: Context, id: Long) {
-        //DELETE
-        clearMediaPlayer()
-        val contentUri: Uri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
-        //mediaPlayer = MediaPlayer.create(context, contentUri)
-        mediaPlayer.apply {
-            setDataSource(context, contentUri)
-            setOnCompletionListener(this@MyMediaPlayer)
-            prepare()
-        }
-        start()
-    }
-
     fun prepare(context: Context, id: Long) {
         clearMediaPlayer()
-        val contentUri: Uri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
+        val contentUri: Uri = ContentUris.withAppendedId(
+            android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            id
+        )
         //mediaPlayer = MediaPlayer.create(context, contentUri)
         mediaPlayer.apply {
             setDataSource(context, contentUri)
@@ -74,7 +64,7 @@ object MyMediaPlayer : MediaPlayer.OnCompletionListener {
     override fun onCompletion(p0: MediaPlayer?) {
         reset()
         when {
-            shrunkViewModel != null -> shrunkViewModel?.whenMusicEndSkipToTheNext(true)
+            shrunkViewModel != null -> shrunkViewModel?.whenMusicEndSkipToTheNext()
             expandViewModel != null -> expandViewModel?.whenMusicEndSkipToTheNext()
         }
     }
