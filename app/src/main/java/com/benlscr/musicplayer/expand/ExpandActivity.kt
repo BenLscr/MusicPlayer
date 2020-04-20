@@ -141,6 +141,7 @@ class ExpandActivity : AppCompatActivity() {
             }
         }
         finish()
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 
     fun skipBackwardExpandButton(view: View) {

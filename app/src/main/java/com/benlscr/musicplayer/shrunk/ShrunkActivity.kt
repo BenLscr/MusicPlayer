@@ -124,6 +124,7 @@ class ShrunkActivity : AppCompatActivity(),
         val idForExpandAct: Long? = shrunkViewModel.currentMusic.value?.id
         idForExpandAct?.let { intent.putExtra(ID_FOR_EXPAND_ACT, it) }
         startActivityForResult(intent, REQUEST_CODE_SHRUNK_EXPAND)
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 
     fun skipBackwardShrunkButton(view: View) {
