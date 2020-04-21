@@ -117,8 +117,10 @@ class ShrunkViewModel : BaseViewModel() {
             _musics.forEachIndexed { index, music ->
                 val musicItemList: MusicItemList
                 if (music.id == id) {
-                    currentIndex = index
-                    _currentMusic.value = music
+                    if (id != _currentMusic.value?.id) {
+                        currentIndex = index
+                        _currentMusic.value = music
+                    }
                     musicItemList = MusicItemList(
                         id = music.id,
                         title = music.title,
