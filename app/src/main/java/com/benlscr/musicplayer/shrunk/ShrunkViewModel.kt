@@ -17,7 +17,6 @@ class ShrunkViewModel : BaseViewModel() {
     val musics: LiveData<List<Music>> = _musics
     private val _currentMusic = MutableLiveData<Music>()
     val currentMusic: LiveData<Music> = _currentMusic
-    private var currentIndex: Int = -1
     private val _albumAndArtist = MutableLiveData<String>()
     val albumAndArtist: LiveData<String> = _albumAndArtist
     private val _musicsItemList = MutableLiveData<List<MusicItemList>>()
@@ -111,7 +110,7 @@ class ShrunkViewModel : BaseViewModel() {
         updateMusicListForFragment(idSelected)
     }
 
-    private fun updateMusicListForFragment(id: Long) {
+    fun updateMusicListForFragment(id: Long) {
         val list = ArrayList<MusicItemList>()
         _musics.value?.let { _musics ->
             _musics.forEachIndexed { index, music ->
@@ -165,9 +164,8 @@ class ShrunkViewModel : BaseViewModel() {
                     } else if (currentIndex > 0) {
                         currentIndex -= 1
                     }
-                    _currentMusic.value = _musics[currentIndex]
-                    needToPlayOrJustPrepare(_currentMusic.value!!.id)
-                    updateMusicListForFragment(_currentMusic.value!!.id)
+                    needToPlayOrJustPrepare(_musics[currentIndex].id)
+                    updateMusicListForFragment(_musics[currentIndex].id)
                 } else {
                     MyMediaPlayer.restart()
                 }
@@ -187,31 +185,12 @@ class ShrunkViewModel : BaseViewModel() {
                 } else {
                     currentIndex += 1
                 }
-                _currentMusic.value = _musics[currentIndex]
-                updateMusicListForFragment(_currentMusic.value!!.id)
-                needToPlayOrJustPrepare(_currentMusic.value!!.id)
+                updateMusicListForFragment(_musics[currentIndex].id)
+                needToPlayOrJustPrepare(_musics[currentIndex].id)
             } else {
                 /**
                  * Need a snackbar for error
                  * */
-            }
-        }
-    }
-
-    fun idFromExpandActivity(idFromExpandAct: Long) {
-        if (idFromExpandAct == _currentMusic.value?.id) {
-            val music = _currentMusic.value
-            _currentMusic.value = music
-            updateMusicListForFragment(_currentMusic.value!!.id)
-        } else {
-            _musics.value?.let { _musics ->
-                _musics.forEachIndexed { index, music ->
-                    if (music.id == idFromExpandAct) {
-                        currentIndex = index
-                        _currentMusic.value = music
-                        updateMusicListForFragment(music.id)
-                    }
-                }
             }
         }
     }

@@ -15,6 +15,7 @@ abstract class BaseViewModel : ViewModel() {
     private val _albumImage = MutableLiveData<Uri>()
     val albumImage: LiveData<Uri> = _albumImage
     private var isThisTheEnd: Boolean = false
+    protected var currentIndex: Int = -1
 
     abstract fun lookForMusics(contentResolver: ContentResolver)
     abstract fun skipBackward()

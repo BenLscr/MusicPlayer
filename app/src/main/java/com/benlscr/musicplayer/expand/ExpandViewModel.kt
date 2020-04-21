@@ -15,7 +15,6 @@ class ExpandViewModel : BaseViewModel() {
     private val _musics = MutableLiveData<List<Music>>()
     private val _currentMusic = MutableLiveData<Music>()
     val currentMusic: LiveData<Music> = _currentMusic
-    private var currentIndex: Int = -1
     private val _curMusicDuration = MutableLiveData<Int>()
     val curMusicDuration: LiveData<Int> = _curMusicDuration
     private val _buttonPlayOrPause = MutableLiveData<Int>()

@@ -140,11 +140,13 @@ class ShrunkActivity : AppCompatActivity(),
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_SHRUNK_EXPAND) {
             if (resultCode == Activity.RESULT_CANCELED) {
-                data?.let {
-                    val idFromExpandAct = it.getLongExtra(ID_FOR_SHRUNK_ACT, -1L)
+                if (data != null) {
+                    val idFromExpandAct = data.getLongExtra(ID_FOR_SHRUNK_ACT, -1L)
                     if (idFromExpandAct != -1L) {
-                        shrunkViewModel.idFromExpandActivity(idFromExpandAct)
+                        shrunkViewModel.updateMusicListForFragment(idFromExpandAct)
                     }
+                }  else {
+                    shrunkViewModel.prepareMusicsItemList()
                 }
             }
         }
