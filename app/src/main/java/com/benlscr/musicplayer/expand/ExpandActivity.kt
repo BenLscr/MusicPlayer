@@ -121,10 +121,14 @@ class ExpandActivity : AppCompatActivity() {
     private fun manageSeekBarListener() {
         binding.seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                expandViewModel.eventOnSeekBarFromUser(seekBar.progress)
+                seekHandler.postDelayed(runnable, 100)
+            }
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
-                    expandViewModel.eventOnSeekBarFromUser(progress)
+                    seekHandler.removeCallbacks(runnable)
+                    binding.currentTime.text = expandViewModel.milliSecondsToTimer(progress)
                 }
             }
         })
