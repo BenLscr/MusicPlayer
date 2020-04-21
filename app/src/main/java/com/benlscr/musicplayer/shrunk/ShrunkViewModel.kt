@@ -1,48 +1,34 @@
 package com.benlscr.musicplayer.shrunk
 
 import android.content.ContentResolver
-import android.content.ContentUris
-import android.content.Context
 import android.database.Cursor
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.benlscr.musicplayer.MyMediaPlayer
 import com.benlscr.musicplayer.R
+import com.benlscr.musicplayer.base.BaseViewModel
 import com.benlscr.musicplayer.shrunk.model.Music
 import com.benlscr.musicplayer.shrunk.model.MusicItemList
 
-class ShrunkViewModel : ViewModel() {
+class ShrunkViewModel : BaseViewModel() {
 
-    private lateinit var context: Context
     private val _musics = MutableLiveData<List<Music>>()
     val musics: LiveData<List<Music>> = _musics
     private val _currentMusic = MutableLiveData<Music>()
     val currentMusic: LiveData<Music> = _currentMusic
     private var currentIndex: Int = -1
-    private val _albumImage = MutableLiveData<Uri>()
-    val albumImage: LiveData<Uri> = _albumImage
     private val _albumAndArtist = MutableLiveData<String>()
     val albumAndArtist: LiveData<String> = _albumAndArtist
     private val _musicsItemList = MutableLiveData<List<MusicItemList>>()
     val musicsItemList: LiveData<List<MusicItemList>> = _musicsItemList
-    private var isThisTheEnd: Boolean = false
 
     override fun onCleared() {
         super.onCleared()
         MyMediaPlayer.release()
     }
 
-    fun keepContextFromActivity(context: Context) {
-        this.context = context
-    }
-
-    fun giveViewModelToMediaPlayer() =
-        MyMediaPlayer.keepTheViewModel(this)
-
-    fun lookForMusics(contentResolver: ContentResolver) {
+    override fun lookForMusics(contentResolver: ContentResolver) {
         val resolver: ContentResolver = contentResolver
         val uri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val cursor: Cursor? = resolver.query(uri, null, null, null, null)
@@ -125,14 +111,6 @@ class ShrunkViewModel : ViewModel() {
         updateMusicListForFragment(idSelected)
     }
 
-    private fun playOrPause() {
-        if (MyMediaPlayer.isPlaying()) {
-            MyMediaPlayer.pause()
-        } else {
-            MyMediaPlayer.start()
-        }
-    }
-
     private fun updateMusicListForFragment(id: Long) {
         val list = ArrayList<MusicItemList>()
         _musics.value?.let { _musics ->
@@ -167,18 +145,11 @@ class ShrunkViewModel : ViewModel() {
         _musicsItemList.value = list
     }
 
-    fun showAlbumArtInConsole(albumId: Long) {
-        val uri = Uri.parse("content://media/external/audio/albumart")
-        val albumArtUri = ContentUris.withAppendedId(uri, albumId)
-        // albumArtUri = Uri.parse("content://media/external/audio/albumart/$albumId")
-        _albumImage.value = albumArtUri
-    }
-
     fun showAlbumAndArtistPlayedInConsole(album: String, artist: String) {
         _albumAndArtist.value = "$album \u2022 $artist"
     }
 
-    fun skipBackward() {
+    override fun skipBackward() {
         _musics.value?.let { _musics ->
             if (_musics.isNotEmpty() && currentIndex != -1) {
                 if (MyMediaPlayer.currentPosition() < 5000
@@ -193,8 +164,8 @@ class ShrunkViewModel : ViewModel() {
                         currentIndex -= 1
                     }
                     _currentMusic.value = _musics[currentIndex]
-                    updateMusicListForFragment(_currentMusic.value!!.id)
                     needToPlayOrJustPrepare(_currentMusic.value!!.id)
+                    updateMusicListForFragment(_currentMusic.value!!.id)
                 } else {
                     MyMediaPlayer.restart()
                 }
@@ -206,23 +177,7 @@ class ShrunkViewModel : ViewModel() {
         }
     }
 
-    private fun needToPlayOrJustPrepare(id: Long) {
-        if (MyMediaPlayer.isPlaying() || isThisTheEnd) {
-            if (isThisTheEnd) {
-                isThisTheEnd = false
-            }
-            playNewMusic(id)
-        } else {
-            MyMediaPlayer.prepare(context, id)
-        }
-    }
-
-    private fun playNewMusic(id: Long) {
-        MyMediaPlayer.prepare(context, id)
-        MyMediaPlayer.start()
-    }
-
-    fun skipForward() {
+    override fun skipForward() {
         _musics.value?.let { _musics ->
             if (_musics.isNotEmpty() && currentIndex != -1) {
                 if (currentIndex == _musics.size - 1) {
@@ -239,11 +194,6 @@ class ShrunkViewModel : ViewModel() {
                  * */
             }
         }
-    }
-
-    fun whenMusicEndSkipToTheNext() {
-        isThisTheEnd = true
-        skipForward()
     }
 
     fun idFromExpandActivity(idFromExpandAct: Long) {

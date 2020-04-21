@@ -1,41 +1,27 @@
 package com.benlscr.musicplayer.expand
 
 import android.content.ContentResolver
-import android.content.ContentUris
-import android.content.Context
 import android.database.Cursor
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.benlscr.musicplayer.MyMediaPlayer
 import com.benlscr.musicplayer.R
+import com.benlscr.musicplayer.base.BaseViewModel
 import com.benlscr.musicplayer.expand.model.Music
 
-class ExpandViewModel : ViewModel() {
+class ExpandViewModel : BaseViewModel() {
 
-    private lateinit var context: Context
     private val _musics = MutableLiveData<List<Music>>()
     private val _currentMusic = MutableLiveData<Music>()
     val currentMusic: LiveData<Music> = _currentMusic
     private var currentIndex: Int = -1
-    private val _albumImage = MutableLiveData<Uri>()
-    val albumImage: LiveData<Uri> = _albumImage
     private val _curMusicDuration = MutableLiveData<Int>()
     val curMusicDuration: LiveData<Int> = _curMusicDuration
     private val _buttonPlayOrPause = MutableLiveData<Int>()
     val buttonPlayOrPause: LiveData<Int> = _buttonPlayOrPause
-    private var isThisTheEnd: Boolean = false
 
-    fun keepContextFromActivity(context: Context) {
-        this.context = context
-    }
-
-    fun giveViewModelToMediaPlayer() =
-        MyMediaPlayer.keepTheViewModel(this)
-
-    fun lookForMusics(contentResolver: ContentResolver) {
+    override fun lookForMusics(contentResolver: ContentResolver) {
         val resolver: ContentResolver = contentResolver
         val uri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val cursor: Cursor? = resolver.query(uri, null, null, null, null)
@@ -104,14 +90,7 @@ class ExpandViewModel : ViewModel() {
         _curMusicDuration.value = MyMediaPlayer.duration()
     }
 
-    fun showAlbumArtInConsole(albumId: Long) {
-        val uri = Uri.parse("content://media/external/audio/albumart")
-        val albumArtUri = ContentUris.withAppendedId(uri, albumId)
-        // albumArtUri = Uri.parse("content://media/external/audio/albumart/$albumId")
-        _albumImage.value = albumArtUri
-    }
-
-    fun skipBackward() {
+    override fun skipBackward() {
         _musics.value?.let { _musics ->
             if (_musics.isNotEmpty() && currentIndex != -1) {
                 if (MyMediaPlayer.currentPosition() < 5000
@@ -125,12 +104,12 @@ class ExpandViewModel : ViewModel() {
                     } else if (currentIndex > 0) {
                         currentIndex -= 1
                     }
-                    needToPlayOrJustPrepare(_musics[currentIndex].id)
                     _currentMusic.value = _musics[currentIndex]
+                    needToPlayOrJustPrepare(_currentMusic.value!!.id)
+                    showPlayOrPauseButton()
                 } else {
                     MyMediaPlayer.restart()
                 }
-                showPlayOrPauseButton()
             } else {
                 /**
                  * Need a snackbar for error
@@ -139,16 +118,12 @@ class ExpandViewModel : ViewModel() {
         }
     }
 
-    fun playOrPause() {
-        if (MyMediaPlayer.isPlaying()) {
-            MyMediaPlayer.pause()
-        } else {
-            MyMediaPlayer.start()
-        }
+    override fun playOrPause() {
+        super.playOrPause()
         showPlayOrPauseButton()
     }
 
-    fun skipForward() {
+    override fun skipForward() {
         _musics.value?.let { _musics ->
             if (_musics.isNotEmpty() && currentIndex != -1) {
                 if (currentIndex == _musics.size - 1) {
@@ -167,33 +142,12 @@ class ExpandViewModel : ViewModel() {
         }
     }
 
-    private fun needToPlayOrJustPrepare(id: Long) {
-        if (MyMediaPlayer.isPlaying() || isThisTheEnd) {
-            if (isThisTheEnd) {
-                isThisTheEnd = false
-            }
-            playNewMusic(id)
-        } else {
-            MyMediaPlayer.prepare(context, id)
-        }
-    }
-
-    private fun playNewMusic(id: Long) {
-        MyMediaPlayer.prepare(context, id)
-        MyMediaPlayer.start()
-    }
-
     private fun showPlayOrPauseButton() {
         if (MyMediaPlayer.isPlaying()) {
             _buttonPlayOrPause.value = R.drawable.console_pause_expand
         } else {
             _buttonPlayOrPause.value = R.drawable.console_play_expand
         }
-    }
-
-    fun whenMusicEndSkipToTheNext() {
-        isThisTheEnd = true
-        skipForward()
     }
 
     fun milliSecondsToTimer(milliseconds: Int): String {
