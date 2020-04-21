@@ -115,6 +115,7 @@ class ShrunkActivity : AppCompatActivity(),
 
     private fun showAlbumAndArtist(albumAndArtist: String) {
         binding.albumAndArtist.text = albumAndArtist
+        binding.albumAndArtist.isSelected = true
     }
 
     /* ---------- LISTENERS FROM LAYOUT ---------- */

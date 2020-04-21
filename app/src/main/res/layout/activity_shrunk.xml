@@ -23,13 +23,20 @@
 
                 <TextView
                     android:id="@+id/album_and_artist"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_margin="30dp"
-                    android:text="No track currently played."
+                    android:gravity="center"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginEnd="40dp"
+                    android:text="No music currently played."
                     android:textColor="@color/colorAlbum"
                     android:textAllCaps="true"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:fadingEdge="horizontal"
+                    android:fadingEdgeLength="20dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
