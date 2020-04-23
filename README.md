@@ -14,7 +14,7 @@ This project use :
   - [ShapeOfView](https://github.com/florent37/ShapeOfView)
   - [Glide](https://github.com/bumptech/glide)
 
-##Screenshot
+## Screenshot
 ![screenshot_expanded_view](https://github.com/BenLscr/MusicPlayer/blob/master/images/screenshot_expanded_view.jpg?raw_true) 
 ![screenshot_home](https://github.com/BenLscr/MusicPlayer/blob/master/images/screenshot_home.jpg?raw_true) 
 ![screenshot_shrunk_view](https://github.com/BenLscr/MusicPlayer/blob/master/images/screenshot_shrunk_view.jpg?raw_true) 
